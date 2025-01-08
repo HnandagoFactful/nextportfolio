@@ -1,0 +1,19 @@
+{
+    
+    "home": {
+        "global": {
+            "project": "Portfolio",
+            "navigation": [
+                {
+                    "name": "Home",
+                    "path": "/en"
+                },
+                {
+                    "name": "Detail",
+                    "path": "/en/detail"
+                }
+            ]
+        },
+        "project": "Portfolio"
+    }
+}

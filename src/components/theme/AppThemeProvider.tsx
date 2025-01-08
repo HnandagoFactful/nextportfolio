@@ -5,11 +5,12 @@ import { Theme } from "@radix-ui/themes";
 
 import "@radix-ui/themes/styles.css";
 import "./theme-primary.css";
+import "./theme-dark.css";
 
 export default function AppThemeProvider({ children }: { children: ReactNode }) {
-    console.log('theme rendering')
-    return (<ThemeProvider attribute="class">
-        <Theme className='light'>
+    
+    return (<ThemeProvider defaultTheme='dark' attribute="class">
+        <Theme accentColor='blue' panelBackground='translucent'>
             {children}
         </Theme>
     </ThemeProvider>);
