@@ -11,6 +11,33 @@
                 {
                     "name": "Detail",
                     "path": "/en/detail"
+                },
+                {
+                    "name": "JSON2SQL",
+                    "path": "/en/json-to-sql"
+                }
+            ]
+        },
+        "project": "Portfolio"
+    },
+    "jsontosql": {
+        "global": {
+            "project": "Portfolio",
+            "navigation": [
+                {
+                    "name": "Home",
+                    "alias": "home",
+                    "path": "/en"
+                },
+                {
+                    "name": "Detail",
+                    "alias": "detail",
+                    "path": "/en/detail"
+                },
+                {
+                    "name": "JSON2SQL",
+                    "alias": "jsontosql",
+                    "path": "/en/json-to-sql"
                 }
             ]
         },

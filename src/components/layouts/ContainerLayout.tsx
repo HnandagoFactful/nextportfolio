@@ -1,11 +1,9 @@
 "use client";
-import { useRouter } from 'next/router'
 import { useEffect, useRef, ReactNode, useState } from "react";
 import clsx from "clsx";
-import { Box, IconButton, Flex, Heading, ScrollArea, Text, Section, Button } from "@radix-ui/themes";
+import { Box, Flex, Heading, ScrollArea, Section } from "@radix-ui/themes";
 import ThemeSwitcher from "../theme/ThemeSwitcher";
 
-import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 import Navigation from './Navigation';
 import { useTranslations } from 'next-intl';
 
@@ -53,7 +51,7 @@ export default function ContainerLayout({ children, pageName }: { children: Reac
             <ScrollArea ref={layoutContentRef}
                 type="always"
                 scrollbars="vertical"
-                className="pt-4 pl-4 pr-4 w-screen"
+                className="pt-4 pl-4 pr-4 w-screen block"
                 style={{
                     height: 'calc(100vh - 62px)',
                     background: "linear-gradient(to top, var(--lime-2), transparent)"

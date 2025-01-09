@@ -12,9 +12,10 @@ export default function NavItems() {
     const t = useTranslations(pageName);
     return (
         <>
-            {t?.raw?.('global.navigation')?.map((item: { name: string, path: string }) => {
+            {t?.raw?.('global.navigation')?.map((item: { name: string, path: string; alias: string }) => {
+                console.log(item, pageName)
                 return (<Button key={`navigation-${item?.name}`} className="pl-2" color="lime" variant="ghost">
-                    <Text size={"4"} weight={item.name?.toLowerCase?.() === pageName ? "bold" : "regular"}>{item?.name}</Text>
+                    <Text size={"4"} weight={item.alias === pageName ? "bold" : "regular"}>{item?.name}</Text>
                 </Button>)
             })}
         </>
