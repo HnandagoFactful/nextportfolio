@@ -1,4 +1,4 @@
-import { Box, Button, Card, Flex, Grid, Heading, Text, VisuallyHidden } from "@radix-ui/themes";
+import { Box, Button, Card, Code, Flex, Grid, Heading, Text, VisuallyHidden } from "@radix-ui/themes";
 import { useEffect, useRef, useState } from "react";
 
 import { Cross1Icon } from "@radix-ui/react-icons"
@@ -11,7 +11,6 @@ export default function StaticTwoColResponsive() {
     const [jsonFile, setJSONFile] = useState<{ [key: string]: any } | null>(null)
 
     const onReaderLoad = function (event: any) {
-        console.log(typeof event.target.result)
         setJSONFile(JSON.parse(event.target.result));
         buildJSONElements(JSON.parse(event.target.result), 0)
     }
@@ -25,21 +24,43 @@ export default function StaticTwoColResponsive() {
         if (!root) {
             return;
         }
-        return Object.keys(root).map((item) => {
-            if (!Array.isArray(root[item]) && typeof root[item] === "object") {
-                return buildJSONElements(root[item] as any, depth+1)
+        const rootKeys = Object.keys(root);
+        return rootKeys.map((item) => {
+            if (!Array.isArray(root[item]) && typeof root[item] === "object" && ![null, undefined].includes(root[item] as any)) {
+                return (<Box key={`${JSON.stringify(root[item])}-${item}`} style={{
+                    paddingLeft: `${(depth + 1) * 12}px`,
+                }}>
+                    <Text>{item}{": {"}</Text>
+                    {buildJSONElements(root[item] as any, depth + 1)}
+                    <Text>{"},"}</Text>
+                </Box>)
             }
             if (Array.isArray(root[item])) {
-                return root[item].map((arrItem, index) => {
-                    if (typeof (root[item] as any[])[index] !== "object") {
-
-                        console.log('not object in array',(root[item] as any[])[index])
-                        return (root[item] as any[])[index]
-                    }
-                    return buildJSONElements((root[item] as any[])[index], depth + 1)
-                })
+                return (
+                    <Box key={`${JSON.stringify(root)}${item}-${depth}-arrayroot`} style={{
+                        paddingLeft: `${(depth + 1) * 12}px`,
+                    }}>
+                        <Text>{item} {": ["}</Text>
+                        {root[item].map((arrItem, index) => {
+                            if (typeof (root[item] as any[])[index] !== "object") {
+                                return (<p key={`${JSON.stringify(root)}${item}-${depth}-${index}`} style={{
+                                    textIndent: `${(depth + 1) * 12}px`,
+                                }}>{(root[item] as any[])[index]}{","}</p>)
+                            }
+                            return (
+                                <Box key={`${JSON.stringify(root)}${item}-${depth}-${index}`}>
+                                     <Text>{"{"}</Text>
+                                    {buildJSONElements((root[item] as any[])[index], depth + 1)}
+                                    <Text>{"},"}</Text>
+                                </Box>
+                            )
+                        })}
+                        <Text>{"],"}</Text>
+                    </Box>)
             }
-            return <p key={`${JSON.stringify(root)}${item}-${depth}}`}>{`${item}: ${root[item]} - ${depth}`}</p>;
+            return <p key={`${JSON.stringify(root)}${item}-${depth}`} style={{
+                textIndent: `${(depth + 1) * 12}px`,
+            }}>{`${item}: ${root[item]}`}{depth === 0 ? "" : ","}</p>;
         })
     }
 
@@ -63,8 +84,14 @@ export default function StaticTwoColResponsive() {
                 </VisuallyHidden>
             </Flex>
             <Box>
-                <>{
-        jsonFile && buildJSONElements(jsonFile, 0)}</>
+                <Code>
+                    <Text>{"{"}</Text>
+                    {
+                        jsonFile && buildJSONElements(jsonFile, 0)
+                    }
+
+                    <Text>{"}"}</Text>
+                </Code>
             </Box>
         </Card>
         <Card>
