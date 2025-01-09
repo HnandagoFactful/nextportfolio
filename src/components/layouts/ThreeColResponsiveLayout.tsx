@@ -13,8 +13,6 @@ export default function ThreeColResponsiveLayout({
     rowHeight?: number;
     children: React.ReactNode
 }) {
-    const x = Children.map(children, (child) => child)
-    console.log(x, children)
     return (
         <ResponsiveGridLayout
             className="layout"

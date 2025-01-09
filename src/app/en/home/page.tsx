@@ -1,5 +1,5 @@
 'use client';
-import ContainerLayout from "@/components/layouts/ContainerLayout";
+import ContainerLayout from "@/components/globals/ContainerLayout";
 import { Text } from "@radix-ui/themes";
 import pageProvider from '@/providers/PageProvider';
 import HomeView from "@/views/home/HomeView";

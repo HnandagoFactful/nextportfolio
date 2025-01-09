@@ -11,7 +11,7 @@ export default function Navigation() {
     const isMounted = useIsClient();
     const pathname = usePathname()
     const size = useWindowSize();
-    if (size && size?.width > 768) {
+    if (size && size?.width > 768 && isMounted) {
         return (
             <Flex
                 direction={"row"}

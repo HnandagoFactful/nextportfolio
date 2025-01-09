@@ -18,7 +18,9 @@ export default function ContainerLayout({ children, pageName }: { children: Reac
         if (layoutContentRef.current) {
 
             layoutContentRef.current.addEventListener('scroll', onScroll, { passive: true });
-            return () => layoutContentRef.current.removeEventListener('scroll', onScroll);
+            return () => {
+                layoutContentRef?.current?.removeEventListener?.('scroll', onScroll);
+            }
         }
     }, [])
     return (

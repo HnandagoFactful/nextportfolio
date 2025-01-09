@@ -1,10 +1,18 @@
 import { Box, Button, Card, Code, Flex, Grid, Heading, Text, VisuallyHidden } from "@radix-ui/themes";
 import { useEffect, useRef, useState } from "react";
 
-import { Cross1Icon } from "@radix-ui/react-icons"
+import { Cross1Icon, DragHandleDots2Icon } from "@radix-ui/react-icons"
 
 
-export default function StaticTwoColResponsive() {
+export default function StaticTwoColResponsive({
+    initWidths = [50, 50],
+    isDragResize = true
+}: {
+    initWidths?: [number, number],
+    isDragResize?: boolean;
+}) {
+    const containerRef = useRef<HTMLDivElement | null>(null);
+
     const readerRef = useRef<FileReader | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
     const [rawFile, setRawFile] = useState<File | null>(null);
@@ -49,7 +57,7 @@ export default function StaticTwoColResponsive() {
                             }
                             return (
                                 <Box key={`${JSON.stringify(root)}${item}-${depth}-${index}`}>
-                                     <Text>{"{"}</Text>
+                                    <Text>{"{"}</Text>
                                     {buildJSONElements((root[item] as any[])[index], depth + 1)}
                                     <Text>{"},"}</Text>
                                 </Box>
@@ -64,8 +72,8 @@ export default function StaticTwoColResponsive() {
         })
     }
 
-    return (<Grid columns="50% 50%" gap="3" width="auto">
-        <Card>
+    return (<Grid ref={containerRef} columns="50% 50%" gap="3" width="auto">
+        <Card className="relative">
             <Flex direction={"row"} justify={"between"} align={"center"}>
                 <Heading color="lime" size={"4"}>Upload JSON</Heading>
                 <Flex direction={"column"} gap={"2"}>

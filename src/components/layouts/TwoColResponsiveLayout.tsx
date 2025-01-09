@@ -17,8 +17,6 @@ export default function TwoColResponsiveLayout({
     useMdForXss?: boolean;
     children: React.ReactNode
 }) {
-    const x = Children.map(children, (child) => child)
-    console.log(x, children)
     return (
         <ResponsiveGridLayout
             className="layout"
