@@ -2,6 +2,7 @@ import { Box, Button, Card, Code, Flex, Grid, Heading, Text, VisuallyHidden } fr
 import { useEffect, useRef, useState } from "react";
 
 import { Cross1Icon, DragHandleDots2Icon } from "@radix-ui/react-icons"
+import TwoColResizableLayout from "./TwoColResizableLayout";
 
 
 export default function StaticTwoColResponsive({
@@ -72,8 +73,8 @@ export default function StaticTwoColResponsive({
         })
     }
 
-    return (<Grid ref={containerRef} columns="50% 50%" gap="3" width="auto">
-        <Card className="relative">
+    return (<TwoColResizableLayout>
+        <>
             <Flex direction={"row"} justify={"between"} align={"center"}>
                 <Heading color="lime" size={"4"}>Upload JSON</Heading>
                 <Flex direction={"column"} gap={"2"}>
@@ -101,8 +102,7 @@ export default function StaticTwoColResponsive({
                     <Text>{"}"}</Text>
                 </Code>
             </Box>
-        </Card>
-        <Card>
-        </Card>
-    </Grid>)
+        </>
+        <Text>a</Text>
+    </TwoColResizableLayout>)
 }
