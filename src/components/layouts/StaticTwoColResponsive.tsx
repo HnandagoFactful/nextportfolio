@@ -34,42 +34,54 @@ export default function StaticTwoColResponsive({
             return;
         }
         const rootKeys = Object.keys(root);
-        return rootKeys.map((item) => {
+        return rootKeys.map((item, rootKeyIndex: number) => {
             if (!Array.isArray(root[item]) && typeof root[item] === "object" && ![null, undefined].includes(root[item] as any)) {
-                return (<Box key={`${JSON.stringify(root[item])}-${item}`} style={{
-                    paddingLeft: `${(depth + 1) * 12}px`,
-                }}>
-                    <Text>{item}{": {"}</Text>
+                return (<Box key={`${JSON.stringify(root[item])}-${item}`}>
+                    <Text color="lime" as="p" style={{
+                        textIndent: `${(depth + 1) * 12}px`,
+                    }}>{item}
+                        <Text color="yellow">{":"}</Text> {"{"}</Text>
                     {buildJSONElements(root[item] as any, depth + 1)}
-                    <Text>{"},"}</Text>
+                    <Text as="p" style={{
+                        textIndent: `${(depth + 1) * 12}px`,
+                    }}>{"}"}{rootKeys.length - 1 === rootKeyIndex ? "" : ","}</Text>
                 </Box>)
             }
             if (Array.isArray(root[item])) {
+                const arrayTypeItemValues = root[item];
                 return (
                     <Box key={`${JSON.stringify(root)}${item}-${depth}-arrayroot`} style={{
                         paddingLeft: `${(depth + 1) * 12}px`,
                     }}>
-                        <Text>{item} {": ["}</Text>
-                        {root[item].map((arrItem, index) => {
-                            if (typeof (root[item] as any[])[index] !== "object") {
-                                return (<p key={`${JSON.stringify(root)}${item}-${depth}-${index}`} style={{
+                        <Text as="p"> <Text color="lime">{item}</Text><Text color="yellow">{":"}</Text>{"["}</Text>
+                        {arrayTypeItemValues.map((arrItem, arrayTypeItemValuesIndex: number) => {
+                            if (typeof (root[item] as any[])[arrayTypeItemValuesIndex] !== "object") {
+                                return (<p key={`${JSON.stringify(root)}${item}-${depth}-${arrayTypeItemValuesIndex}`} style={{
                                     textIndent: `${(depth + 1) * 12}px`,
-                                }}>{(root[item] as any[])[index]}{","}</p>)
+                                }}>{(root[item] as any[])[arrayTypeItemValuesIndex]}{arrayTypeItemValuesIndex === arrayTypeItemValues.length - 1 ? "" : ","}</p>)
                             }
                             return (
-                                <Box key={`${JSON.stringify(root)}${item}-${depth}-${index}`}>
-                                    <Text>{"{"}</Text>
-                                    {buildJSONElements((root[item] as any[])[index], depth + 1)}
-                                    <Text>{"},"}</Text>
+                                <Box key={`${JSON.stringify(root)}${item}-${depth}-${arrayTypeItemValuesIndex}`}>
+                                    <Text as="p" style={{
+                                        textIndent: `${(depth + 1) * 12}px`,
+                                    }} onClick={() => {
+                                        console.log("minimize")
+                                    }}>{"{"}</Text>
+                                    {buildJSONElements((root[item] as any[])[arrayTypeItemValuesIndex], depth + 1)}
+                                    <Text as="p" style={{
+                                        textIndent: `${(depth + 1) * 12}px`,
+                                    }}>{"}"}{arrayTypeItemValuesIndex === arrayTypeItemValues.length - 1 ? "" : ","}</Text>
                                 </Box>
                             )
                         })}
-                        <Text>{"],"}</Text>
+                        <Text as="p">{"],"}</Text>
                     </Box>)
             }
-            return <p key={`${JSON.stringify(root)}${item}-${depth}`} style={{
+            return <Text as="p" key={`${JSON.stringify(root)}${item}-${depth}`} style={{
                 textIndent: `${(depth + 1) * 12}px`,
-            }}>{`${item}: ${root[item]}`}{depth === 0 ? "" : ","}</p>;
+            }}>
+                <Text color="lime">{item}</Text><Text color="yellow">{`:`}</Text>{" "}{`${root[item]}`}{rootKeyIndex === rootKeys.length - 1 ? "" : ","}
+            </Text>;
         })
     }
 
@@ -92,14 +104,14 @@ export default function StaticTwoColResponsive({
                     }} />
                 </VisuallyHidden>
             </Flex>
-            <Box>
+            <Box id={"json-display"} className="overflow-y-scroll h-[90%]">
                 <Code>
-                    <Text>{"{"}</Text>
+                    <Text as="p">{"{"}</Text>
                     {
                         jsonFile && buildJSONElements(jsonFile, 0)
                     }
 
-                    <Text>{"}"}</Text>
+                    <Text as="p">{"}"}</Text>
                 </Code>
             </Box>
         </>

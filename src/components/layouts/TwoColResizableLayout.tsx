@@ -48,6 +48,7 @@ export default function TwoColResizableLayout({ children }: {
     }
     return (
         <TwoColResponsiveLayout
+        resizeHandles={["s", "e"]}
             customLayouts={layouts}
             onResize={onResize}>
             {children}
