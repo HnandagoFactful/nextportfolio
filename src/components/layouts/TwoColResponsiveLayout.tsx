@@ -12,13 +12,13 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 
 export default function TwoColResponsiveLayout({
     children,
-    rowHeight = 200,
+    rowHeight = 50,
     useMdForXs = false,
     useMdForXss = false,
     resizable = false,
     isStatic = false,
     customLayouts = null,
-    height = '80vh',
+    height = 'auto',
     resizeHandles = ["e"],
     onResize
 }: {
@@ -35,8 +35,9 @@ export default function TwoColResponsiveLayout({
 }) {
     return (
         <ResponsiveGridLayout
-            className="layout h-screen"
-            style={{ height }}
+            className="layout"
+            maxRows={10}
+            style={{ minHeight: 11 * rowHeight }}
             isBounded
             rowHeight={rowHeight}
             autoSize

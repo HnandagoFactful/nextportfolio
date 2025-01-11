@@ -16,7 +16,10 @@ const useWebworkers = function () {
     }
 
     const sendMessage = function(value: unknown) {
-        workerRef.current?.postMessage(value);
+        workerRef.current?.postMessage({
+            type:  'file-init',
+            payload: value
+        });
     }
 
     const terminateWorker = function() {
