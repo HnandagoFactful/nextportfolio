@@ -1,7 +1,6 @@
 import { Box, Card } from "@radix-ui/themes";
 import React, { Children } from "react";
 import { Layouts, Responsive, WidthProvider } from "react-grid-layout";
-const ResponsiveGridLayout = WidthProvider(Responsive);
 
 import "react-grid-layout/css/styles.css"
 import "react-resizable/css/styles.css"
@@ -9,6 +8,7 @@ import { default2ColResponsiveLayouts } from "./layouts";
 import { TResizeHandles } from "./types";
 
 
+const ResponsiveGridLayout = WidthProvider(Responsive);
 
 export default function TwoColResponsiveLayout({
     children,

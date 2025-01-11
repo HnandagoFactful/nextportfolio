@@ -1,9 +1,12 @@
-import { Box, Button, Card, Code, Flex, Grid, Heading, Text, VisuallyHidden } from "@radix-ui/themes";
+"use client";
+import { Box, Button, Code, Flex, Heading, Text, VisuallyHidden } from "@radix-ui/themes";
 import { useEffect, useRef, useState } from "react";
 
-import { Cross1Icon, DragHandleDots2Icon } from "@radix-ui/react-icons"
+import { Cross1Icon } from "@radix-ui/react-icons"
 import TwoColResizableLayout from "./TwoColResizableLayout";
 
+import useWebworkers from "@/hooks/useWebworker";
+import { useIsClient } from "@uidotdev/usehooks";
 
 export default function StaticTwoColResponsive({
     initWidths = [50, 50],
@@ -12,22 +15,28 @@ export default function StaticTwoColResponsive({
     initWidths?: [number, number],
     isDragResize?: boolean;
 }) {
-    const containerRef = useRef<HTMLDivElement | null>(null);
-
+    const isClient = useIsClient()
+    const {
+        initializeWorker,
+        sendMessage
+    } = useWebworkers();
     const readerRef = useRef<FileReader | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
     const [rawFile, setRawFile] = useState<File | null>(null);
-    const [jsonFile, setJSONFile] = useState<{ [key: string]: any } | null>(null)
-
+    const [jsonFile, setJSONFile] = useState<{ [key: string]: any } | null>(null);
     const onReaderLoad = function (event: any) {
         setJSONFile(JSON.parse(event.target.result));
         buildJSONElements(JSON.parse(event.target.result), 0)
     }
 
+    useEffect(function() {
+        initializeWorker("/workers/jsonprocessor.js");
+    }, [isClient])
+
     useEffect(function () {
         readerRef.current = new FileReader();
         readerRef.current.onload = onReaderLoad;
-    }, [])
+    }, []);
 
     const buildJSONElements: any = function (root: { [key: string]: unknown | unknown[] }, depth: number) {
         if (!root) {
@@ -85,26 +94,27 @@ export default function StaticTwoColResponsive({
         })
     }
 
-    return (<TwoColResizableLayout>
-        <>
-            <Flex direction={"row"} justify={"between"} align={"center"}>
-                <Heading color="lime" size={"4"}>Upload JSON</Heading>
-                <Flex direction={"column"} gap={"2"}>
-                    <Button color="lime" variant="outline" size={"1"} onClick={() => inputRef.current?.click()}>Upload JSON</Button>
-                    {rawFile && (<Button variant="ghost" color="blue" size={"2"} onClick={() => {
-                        setRawFile(null)
-                        setJSONFile(null)
-                    }}>{rawFile?.name}
-                        <Cross1Icon className="mt-[2px]" height={12} width={12} /></Button>)}
-                </Flex>
-                <VisuallyHidden>
-                    <input type="file" accept=".json" ref={inputRef} onChange={(event: any) => {
-                        setRawFile(event.target.files[0]);
-                        readerRef.current && readerRef.current.readAsText(event.target.files[0]);
-                    }} />
-                </VisuallyHidden>
+    return (<>
+        <Flex direction={"row"} justify={"start"} align={"baseline"} gap={"4"}>
+            <Heading color="lime" size={"4"}>Upload JSON</Heading>
+            <Flex direction={"column"} gap={"2"}>
+                <Button color="lime" variant="outline" size={"1"} onClick={() => inputRef.current?.click()}>Upload JSON</Button>
+                {rawFile && (<Button variant="ghost" color="blue" size={"2"} onClick={() => {
+                    setRawFile(null)
+                    setJSONFile(null)
+                }}>{rawFile?.name}
+                    <Cross1Icon className="mt-[2px]" height={12} width={12} /></Button>)}
             </Flex>
-            <Box id={"json-display"} className="overflow-y-scroll h-[90%]">
+            <VisuallyHidden>
+                <input type="file" accept=".json" ref={inputRef} onChange={(event: any) => {
+                    setRawFile(event.target.files[0]);
+                    sendMessage({"uploaded": "file"})
+                    readerRef.current && readerRef.current.readAsText(event.target.files[0]);
+                }} />
+            </VisuallyHidden>
+        </Flex>
+        <TwoColResizableLayout initialWidths={[8, 4]}>
+            <Box id={"json-display"} className="overscroll-y-auto overflow-y-auto h-[90%]">
                 <Code>
                     <Text as="p">{"{"}</Text>
                     {
@@ -114,7 +124,9 @@ export default function StaticTwoColResponsive({
                     <Text as="p">{"}"}</Text>
                 </Code>
             </Box>
-        </>
-        <Text>a</Text>
-    </TwoColResizableLayout>)
+            <Box id={"json-input"}>
+                <Heading>Conversions</Heading>
+            </Box>
+        </TwoColResizableLayout>
+    </>)
 }

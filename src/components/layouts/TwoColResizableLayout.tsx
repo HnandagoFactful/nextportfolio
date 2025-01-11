@@ -4,10 +4,11 @@ import TwoColResponsiveLayout from "./TwoColResponsiveLayout";
 
 import { initial2ColResizeLayout } from './layouts';
 
-export default function TwoColResizableLayout({ children }: {
+export default function TwoColResizableLayout({ initialWidths = [6, 6], children }: {
+    initialWidths?: [number, number]
     children?: React.ReactNode
 }) {
-    const [layouts, setLayouts] = useState<Layouts>(initial2ColResizeLayout);
+    const [layouts, setLayouts] = useState<Layouts>(initial2ColResizeLayout(initialWidths));
     const onResize = (
         layout: Layout[],
         oldItem: Layout,
@@ -48,7 +49,7 @@ export default function TwoColResizableLayout({ children }: {
     }
     return (
         <TwoColResponsiveLayout
-        resizeHandles={["s", "e"]}
+            resizeHandles={["s", "e"]}
             customLayouts={layouts}
             onResize={onResize}>
             {children}
