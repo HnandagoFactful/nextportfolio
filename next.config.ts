@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         destination: '/en/home'
       },
       {
+        source: '/home',
+        destination: '/en/home'
+      },
+      {
         source: '/en',
         destination: '/en/home'
       },
