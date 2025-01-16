@@ -5,7 +5,7 @@ import BlockTitle from "../BlockTitle";
 import useMediaQueries from "@/hooks/useMediaQueries";
 
 export default function Education() {
-    const {isLesThan720} = useMediaQueries();
+    const { isLesThan720 } = useMediaQueries();
 
     return (
         <BlockTitle title="Education" direction={isLesThan720 ? "column" : "row"} justify={"between"} className="max-w-[900px] pt-4">
@@ -25,11 +25,13 @@ export default function Education() {
             {isLesThan720 && (<Separator orientation="horizontal" size="2" className="w-full max-w-[420px]" />)}
             <Flex align={"baseline"} gap="2" direction={"column"} wrap={"wrap"} className="max-w-[420px]">
                 <Flex align={"baseline"} gap="2" direction={"row"} wrap={"wrap"} className="w-full justify-between">
-                    <Text as="p" color="lime"><Image width={20} height={20}
-                        src={"/annauniversity.png"}
-                        alt="Anna University"
-                    />
-                        Anna University</Text>
+                    <Text as="p" color="lime" className="flex flex-row items-baseline gap-1">
+                        <Image width={20} height={20}
+                            src={"/annauniversity.png"}
+                            alt="Anna University"
+                        />
+                        <span className="!text-white">Anna University</span>
+                    </Text>
                     <Text as="p" color="lime">May 2013</Text>
                 </Flex>
                 <Box>
