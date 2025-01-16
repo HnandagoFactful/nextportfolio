@@ -24,7 +24,7 @@ export default function HomeHeader() {
                 <Heading color="lime" style={{ color: "var(--accent-a11)" }} size="8">Harikrishna</Heading>
                 <Heading color="lime" style={{ color: "var(--accent-a12)", textIndent: '80px' }} size="7">Nandagopal</Heading>
             </motion.div>
-            {(<Box className={clsx("flex flex-col gap-3 items-end pr-4", {
+            {(<Box className={clsx("!flex flex-col gap-3 items-end pr-4", {
                 "w-[30%]": !isLesThan600,
                 "w-[100px": isLesThan600,
                 "fixed right-0 top-[94vh] z-50": isLesThan430
