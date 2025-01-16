@@ -1,17 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef } from "react";
 
 const useWebworkers = function () {
     const workerRef = useRef<Worker | null>(null);
 
-    const initializeWorker = function (path: string) {
+    const initializeWorker = function (
+        path: string,
+        successCallback?: (payload: any) => void,
+        errorCallback?: (errorPayload?: any) => void) {
         workerRef.current = new Worker(path, {
             type: 'module',
         })
         workerRef.current.onmessage = (event) => {
-            console.log("on message received", event)
+            successCallback?.(event.data)
         }
         workerRef.current.onerror = (error) => {
-            console.error('Worker error:', error)
+            console.log('Worker error:', error)
+            errorCallback?.(error)
         }
     }
 
@@ -28,7 +33,7 @@ const useWebworkers = function () {
     }
 
     useEffect(function() {
-        () => {
+        return () => {
             terminateWorker();
         }
     }, [])

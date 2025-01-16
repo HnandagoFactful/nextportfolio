@@ -10,7 +10,7 @@ import "./theme-dark.css";
 export default function AppThemeProvider({ children }: { children: ReactNode }) {
     
     return (<ThemeProvider defaultTheme='dark' attribute="class">
-        <Theme accentColor='blue' panelBackground='translucent'>
+        <Theme appearance="dark" accentColor='blue' panelBackground='translucent'>
             {children}
         </Theme>
     </ThemeProvider>);

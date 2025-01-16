@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, ReactNode, useState } from "react";
 import clsx from "clsx";
 import { Box, Flex, Heading, ScrollArea, Section } from "@radix-ui/themes";
@@ -30,7 +31,7 @@ export default function ContainerLayout({ children, pageName }: { children: Reac
                 gap="1"
                 className={clsx("p-0")}
                 style={{
-                    borderBottom: "2px solid var(--lime-9)",
+                    borderBottom: "1px solid var(--lime-9)",
                     boxShadow: scrollPosition > 10 ? "-2px 2px 8px -2px var(--lime-9)" : "unset",
                 }}>
                 <Flex height={"60px"}

@@ -1,5 +1,5 @@
-import { Box, Card } from "@radix-ui/themes";
-import React, { Children } from "react";
+import { Card } from "@radix-ui/themes";
+import React from "react";
 import { Layouts, Responsive, WidthProvider } from "react-grid-layout";
 
 import "react-grid-layout/css/styles.css"
@@ -18,9 +18,9 @@ export default function TwoColResponsiveLayout({
     resizable = false,
     isStatic = false,
     customLayouts = null,
-    height = 'auto',
     resizeHandles = ["e"],
-    onResize
+    onResize,
+    width = undefined
 }: {
     rowHeight?: number;
     useMdForXs?: boolean;
@@ -29,6 +29,7 @@ export default function TwoColResponsiveLayout({
     customLayouts?: Layouts | null;
     isStatic?: boolean;
     height?: string;
+    width?: number;
     resizeHandles?: TResizeHandles[] | undefined;
     onResize?: ReactGridLayout.ItemCallback | undefined;
     children: React.ReactNode
@@ -37,10 +38,11 @@ export default function TwoColResponsiveLayout({
         <ResponsiveGridLayout
             className="layout"
             maxRows={10}
-            style={{ minHeight: 11 * rowHeight }}
+            style={{ minHeight: 11 * rowHeight, maxHeight: 400, width: width ?? '100%' }}
             isBounded
             rowHeight={rowHeight}
             autoSize
+            margin={[4, 10]}
             onResize={customLayouts ? onResize : undefined}
             resizeHandles={resizeHandles}
             compactType={"horizontal"}
@@ -48,8 +50,8 @@ export default function TwoColResponsiveLayout({
             breakpoints={{ lg: 1200, md: 980, sm: 768, xs: 480, xxs: 0 }}
             cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
         >
-            <Card key="a" variant="surface">{(children as any[])[0]}</Card>
-            <Card key="b" variant="surface">{(children as any[])[1]}</Card>
+            <Card key="a" variant="surface">{(children as React.ReactNode[])[0]}</Card>
+            <Card key="b" variant="surface">{(children as React.ReactNode[])[1]}</Card>
         </ResponsiveGridLayout>
     );
 }

@@ -25,7 +25,7 @@ export const initial2ColResizeLayout: (initialWidths?: [number, number]) => {[ke
 
 export const default2ColResponsiveLayouts = (resizable = false, useMdForXs = false, useMdForXss = false, isStatic = false) => ({
     lg: [
-        { i: 'a', x: 0, y: 0, w: 6, minW: 3, maxW: 9, h: 9, isDraggable: false, isResizable: resizable, isStatic },
+        { i: 'a', x: 0, y: 0, w: 6, minW: 3, maxW: 9, h: 9, isDraggable: false, isResizable: resizable, isStatic,  },
         { i: 'b', x: 7, y: 0, w: 6, minW: 3, maxW: 9, h: 9, isDraggable: false, isResizable: resizable },
     ],
     md: [

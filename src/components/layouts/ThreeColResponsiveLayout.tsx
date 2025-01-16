@@ -1,5 +1,5 @@
-import { Box, Card } from "@radix-ui/themes";
-import React, { Children } from "react";
+import { Card } from "@radix-ui/themes";
+import React from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -48,9 +48,9 @@ export default function ThreeColResponsiveLayout({
             breakpoints={{ lg: 1200, md: 980, sm: 768, xs: 480, xxs: 0 }}
             cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
         >
-            <Card key="a" variant="surface">{(children as any[])[0]}</Card>
-            <Card key="b" variant="surface">{(children as any[])[1]}</Card>
-            <Card key="c" variant="surface">{(children as any[])[2]}</Card>
+            <Card key="a" variant="surface">{(children as React.ReactNode[])[0]}</Card>
+            <Card key="b" variant="surface">{(children as React.ReactNode[][])[1]}</Card>
+            <Card key="c" variant="surface">{(children as React.ReactNode[][])[2]}</Card>
         </ResponsiveGridLayout>
     );
 }

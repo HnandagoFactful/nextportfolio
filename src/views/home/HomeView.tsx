@@ -1,16 +1,17 @@
-import { Section, Text } from "@radix-ui/themes";
+"use client";
+import { Section } from "@radix-ui/themes";
 import React from "react";
-import TwoColResponsiveLayout from "@/components/layouts/TwoColResponsiveLayout";
+import HomeHeader from "./HomeHeader";
+import Education from "./education/Education";
+import Experience from "./experiences/Experience";
 
 export default function HomeView() {
 
   return (
-    <Section className="!pt-0">
-      <TwoColResponsiveLayout rowHeight={50}>
-        <Text>1</Text>
-        <Text>21</Text>
-        <Text>213</Text>
-      </TwoColResponsiveLayout>
+    <Section className="pt-8 pl-2 relative">
+      <HomeHeader />
+      <Experience />
+      <Education />
     </Section>
   );
 }

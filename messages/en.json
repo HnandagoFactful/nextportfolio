@@ -6,15 +6,21 @@
             "navigation": [
                 {
                     "name": "Home",
-                    "path": "/en"
+                    "alias": "home",
+                    "path": "/en",
+                    "isVisible": true
                 },
                 {
                     "name": "Detail",
-                    "path": "/en/detail"
+                    "alias": "detail",
+                    "path": "/en/detail",
+                    "isVisible": true
                 },
                 {
                     "name": "JSON2SQL",
-                    "path": "/en/json-to-sql"
+                    "alias": "jsontosql",
+                    "path": "/en/json-to-sql",
+                    "isVisible": false
                 }
             ]
         },
@@ -27,17 +33,20 @@
                 {
                     "name": "Home",
                     "alias": "home",
-                    "path": "/en"
+                    "path": "/en",
+                    "isVisible": true
                 },
                 {
                     "name": "Detail",
                     "alias": "detail",
-                    "path": "/en/detail"
+                    "path": "/en/detail",
+                    "isVisible": true
                 },
                 {
                     "name": "JSON2SQL",
                     "alias": "jsontosql",
-                    "path": "/en/json-to-sql"
+                    "path": "/en/json-to-sql",
+                    "isVisible": false
                 }
             ]
         },

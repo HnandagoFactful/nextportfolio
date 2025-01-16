@@ -13,9 +13,6 @@ export default function TwoColResizableLayout({ initialWidths = [6, 6], children
         layout: Layout[],
         oldItem: Layout,
         newItem: Layout,
-        placeholder: Layout,
-        event: MouseEvent,
-        element: HTMLElement
     ) => {
         const otherItem = layout.find((item: Layout) => item.i != newItem.i);
         if (otherItem) {
@@ -49,7 +46,7 @@ export default function TwoColResizableLayout({ initialWidths = [6, 6], children
     }
     return (
         <TwoColResponsiveLayout
-            resizeHandles={["s", "e"]}
+            resizeHandles={["e"]}
             customLayouts={layouts}
             onResize={onResize}>
             {children}

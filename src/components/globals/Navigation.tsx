@@ -1,5 +1,4 @@
 "use client";
-import { usePathname } from 'next/navigation'
 import { Flex, IconButton } from "@radix-ui/themes";
 import { useWindowSize } from '@uidotdev/usehooks';
 import useIsClient from "@/hooks/useIsClient";
@@ -9,9 +8,9 @@ import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 
 export default function Navigation() {
     const isMounted = useIsClient();
-    const pathname = usePathname()
     const size = useWindowSize();
-    if (size && size?.width > 768 && isMounted) {
+    if (isMounted) {
+    if (size && size.width && size.width > 768) {
         return (
             <Flex
                 direction={"row"}
@@ -28,5 +27,6 @@ export default function Navigation() {
     return (<IconButton color="lime" variant="ghost" name='expand navigation'>
         <HamburgerMenuIcon height={24} width={24} />
     </IconButton>)
-
+    }
+    return null
 }

@@ -1,17 +1,20 @@
 'use client';
-import ContainerLayout from "@/components/globals/ContainerLayout";
-import { Text } from "@radix-ui/themes";
+import dynamic from 'next/dynamic'
+
+const HomeView = dynamic(
+    () => import('@/views/home/HomeView'),
+    { ssr: false }
+  )
 import pageProvider from '@/providers/PageProvider';
-import HomeView from "@/views/home/HomeView";
+
 
 export default function Visits() {
     return (
         <pageProvider.Provider value={{
             pageName: 'home'
         }}>
-            <ContainerLayout pageName="home">
-                <Text>Home</Text>
+            {/* <ContainerLayout pageName="home"> */}
                 <HomeView />
-            </ContainerLayout>
+            {/* </ContainerLayout> */}
         </pageProvider.Provider>)
 }
