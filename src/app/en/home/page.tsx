@@ -1,11 +1,6 @@
 'use client';
-import dynamic from 'next/dynamic'
-
-const HomeView = dynamic(
-    () => import('@/views/home/HomeView'),
-    { ssr: false }
-  )
 import pageProvider from '@/providers/PageProvider';
+import HomeView from '@/views/home/HomeView';
 
 
 export default function Visits() {
@@ -13,8 +8,6 @@ export default function Visits() {
         <pageProvider.Provider value={{
             pageName: 'home'
         }}>
-            {/* <ContainerLayout pageName="home"> */}
-                <HomeView />
-            {/* </ContainerLayout> */}
+            <HomeView />
         </pageProvider.Provider>)
 }

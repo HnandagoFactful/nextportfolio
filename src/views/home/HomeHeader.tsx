@@ -7,7 +7,7 @@ import { motion } from "motion/react";
 
 export default function HomeHeader() {
 
-    const {isLesThan600, isLesThan430} = useMediaQueriues()
+    const { isLesThan600, isLesThan430 } = useMediaQueriues()
     return (
         <Flex justify={"between"}>
             <motion.div initial="hidden" className="overflow-hidden"
@@ -29,9 +29,17 @@ export default function HomeHeader() {
                 "w-[100px": isLesThan600,
                 "fixed right-0 top-[94vh] z-50": isLesThan430
             })}>
-                <Button variant="soft" className="cursor-pointer" style={{ backgroundColor: "#005e93", color: "white" }} size={"4"}>{
-                isLesThan430 ? <LinkedInIcon /> : "LinkedIn"
-                }</Button>
+                <Button variant="soft"
+                    onClick={() => {
+                        window.open("https://www.linkedin.com/in/harikrishna-n-79349121/", "_blank")
+                    }}
+                    className="cursor-pointer"
+                    style={{ backgroundColor: "#005e93", color: "white" }}
+                    size={"4"}>
+                    {
+                        isLesThan430 ? <LinkedInIcon /> : "LinkedIn"
+                    }
+                </Button>
             </Box>)}
         </Flex>
     )

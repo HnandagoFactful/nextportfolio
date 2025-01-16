@@ -1,9 +1,13 @@
 "use client";
-import { Section } from "@radix-ui/themes";
+import dynamic from "next/dynamic";
 import React from "react";
-import HomeHeader from "./HomeHeader";
-import Education from "./education/Education";
-import Experience from "./experiences/Experience";
+import { Section } from "@radix-ui/themes";
+const HomeHeader = dynamic(() => import('./HomeHeader'),
+{ ssr: false })
+const Education = dynamic(() => import('./education/Education'),
+{ ssr: false })
+const Experience = dynamic(() => import('./experiences/Experience'),
+{ ssr: false })
 
 export default function HomeView() {
 
