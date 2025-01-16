@@ -1,4 +1,5 @@
-.dark, .dark-theme {
+.dark,
+.dark-theme {
   --lime-1: #1e201b;
   --lime-2: #232620;
   --lime-3: #2b3124;
@@ -33,7 +34,9 @@
 
 @supports (color: color(display-p3 1 1 1)) {
   @media (color-gamut: p3) {
-    .dark, .dark-theme {
+
+    .dark,
+    .dark-theme {
       --lime-1: oklch(23.9% 0.01 128.9);
       --lime-2: oklch(26.3% 0.0119 128.9);
       --lime-3: oklch(30.2% 0.0241 128.9);
@@ -68,7 +71,8 @@
   }
 }
 
-.dark, .dark-theme {
+.dark,
+.dark-theme {
   --gray-1: #1f1f1f;
   --gray-2: #262626;
   --gray-3: #2f2f2f;
@@ -103,7 +107,9 @@
 
 @supports (color: color(display-p3 1 1 1)) {
   @media (color-gamut: p3) {
-    .dark, .dark-theme {
+
+    .dark,
+    .dark-theme {
       --gray-1: oklch(23.9% 0 none);
       --gray-2: oklch(26.9% 0 none);
       --gray-3: oklch(30.4% 0 none);
@@ -138,6 +144,28 @@
   }
 }
 
-.dark, .dark-theme, :is(.dark, .dark-theme) :where(.radix-themes:not(.light, .light-theme)) {
+.dark,
+.dark-theme,
+:is(.dark, .dark-theme) :where(.radix-themes:not(.light, .light-theme)) {
   --color-background: #1f1f1f;
+
+  /* width */
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: var(--gray-a4);
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: var(--gray-a8);
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 }

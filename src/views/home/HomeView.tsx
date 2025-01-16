@@ -12,7 +12,7 @@ const Experience = dynamic(() => import('./experiences/Experience'),
 export default function HomeView() {
 
   return (
-    <Section className="!pt-2.5 pl-2 relative">
+    <Section className="!pt-2.5 pl-2 relative h-[100vh] overflow-auto">
       <HomeHeader />
       <Experience />
       <Education />
