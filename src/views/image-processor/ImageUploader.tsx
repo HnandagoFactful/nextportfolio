@@ -1,7 +1,7 @@
 import ImageProcessorProvider from "@/providers/ImageProcessorProvider";
 import pageProvider from "@/providers/PageProvider";
 import { MagnifyingGlassIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
-import { Box, TextField, IconButton } from "@radix-ui/themes";
+import { Box, TextField, IconButton, Heading } from "@radix-ui/themes";
 import { use, useRef } from "react";
 
 export default function ImageUploader() {
@@ -11,8 +11,8 @@ export default function ImageUploader() {
 
     return (
         <Box maxWidth="300px">
+            <Heading className="mb-2" color="lime">Upload Images</Heading>
             <TextField.Root placeholder="Upload the images" size="3" onClick={() => {
-                console.log("click")
                 inputRef?.current?.click?.()
             }}>
                 <TextField.Slot>
@@ -24,7 +24,6 @@ export default function ImageUploader() {
                             if (event.target.files) {
                                 const file = event.target.files[0]
                                 const fileExists = uploaderContext.data?.find((item) => item?.name === file.name)
-                                console.log(fileExists)
                                 if (!fileExists) {
                                     uploaderContext.setData(file)
                                     
