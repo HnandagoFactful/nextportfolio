@@ -2,7 +2,7 @@ import ImageProcessorProvider from "@/providers/ImageProcessorProvider";
 import pageProvider from "@/providers/PageProvider";
 import { MagnifyingGlassIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Box, TextField, IconButton, Heading } from "@radix-ui/themes";
-import { use, useRef } from "react";
+import { ChangeEvent, use, useRef } from "react";
 
 export default function ImageUploader() {
     const uploaderContext = use(ImageProcessorProvider);
@@ -20,7 +20,7 @@ export default function ImageUploader() {
                         accept="image/png, image/jpeg"
                         name="Image uploader"
                         className="invisible h-0 w-0"
-                        onChange={(event: any) => {
+                        onChange={(event: ChangeEvent<HTMLInputElement>) => {
                             if (event.target.files) {
                                 const file = event.target.files[0]
                                 const fileExists = uploaderContext.data?.find((item) => item?.name === file.name)

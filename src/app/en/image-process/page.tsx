@@ -23,7 +23,7 @@ export default function JsonToSql() {
         setAlertContentType,
         resetAlert
     }}>
-        <ContainerLayout pageName="home">
+        <ContainerLayout pageName="imageprocessor">
             <ErrorBoundary fallback={<div>Something went wrong</div>}>
                 <ImageViewer />
             </ErrorBoundary>

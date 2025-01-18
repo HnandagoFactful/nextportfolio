@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { use, useEffect, useRef, useState } from "react";
 import ReactCrop, { 
     centerCrop,
@@ -5,10 +6,10 @@ import ReactCrop, {
     Crop,
     PixelCrop
 } from "react-image-crop";
+import { Box } from "@radix-ui/themes";
 import ImageProcessorProvider from "@/providers/ImageProcessorProvider";
-
-
 import 'react-image-crop/dist/ReactCrop.css'
+import CropperControls from "./CropperControls";
 
 function centerAspectCrop(
     mediaWidth: number,
@@ -33,15 +34,15 @@ function centerAspectCrop(
 
 export default function ImageCropper() {
     const imgProvider = use(ImageProcessorProvider)
-    const [fileData, setFileData] = useState<any>(undefined);
-    const previewCanvasRef = useRef<HTMLCanvasElement>(null)
+    const [fileData, setFileData] = useState<string | undefined>(undefined);
     const imgRef = useRef<HTMLImageElement>(null)
-    const hiddenAnchorRef = useRef<HTMLAnchorElement>(null)
-    const blobUrlRef = useRef('')
+    const [isCropDisabled, setIsCropDisabled] = useState<boolean>(false);
     const [crop, setCrop] = useState<Crop>()
-    const [aspectRatio, setAspectRatio] = useState<number>(1)
-    const [scale, setScale] = useState(1)
-    const [rotate, setRotate] = useState(0)
+    const [aspectRatio, setAspectRatio] = useState<number | undefined>(1)
+    const [scale, setScale] = useState<number>(1)
+    const [rotate, setRotate] = useState<number>(0)
+    const [translateX, setTranslateX] = useState<number>(0)
+    const [translateY, setTranslateY] = useState<number>(0)
     const [completedCrop, setCompletedCrop] = useState<PixelCrop>()
 
     function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
@@ -56,35 +57,55 @@ export default function ImageCropper() {
             setFileData(window.URL.createObjectURL(imgProvider.selectedFileData))
         }
         if (fileData && !imgProvider.selectedFileData) {
-            setFileData(null)
+            setFileData(undefined)
         }
-      }, [imgProvider])
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [imgProvider.selectedFileData])
+
 
     if (!fileData) {
-        return null;
+      return null;
     }
 
-    return (
-        <ReactCrop
-            crop={crop}
+    console.log("scale", isCropDisabled)
 
-            onChange={(_, percentCrop) => {
-                console.log('percentage', percentCrop)
-                setCrop(percentCrop)}
-            }
-            onComplete={(c) => setCompletedCrop(c)}
-            aspect={aspectRatio}
-            // minWidth={400}
-            minHeight={100}
-        // circularCrop
+    return (
+      <Box className="relative">
+        <CropperControls isCropDisabled={isCropDisabled}
+          aspectRatio={aspectRatio}
+          imgRef={imgRef}
+          rotate={rotate}
+          scale={scale}
+          completedCrop={completedCrop}
+          translateX={translateX}
+          translateY={translateY}
+          setTranslateX={setTranslateX}
+          setTranslateY={setTranslateY}
+          setIsCropDisabled={setIsCropDisabled}
+          setAspectRatio={setAspectRatio}
+          setScale={setScale}
+          setRotate={setRotate}
+          />
+        <ReactCrop
+          crop={crop}
+          onChange={(_, percentCrop) => {
+              setCrop(percentCrop)}
+          }
+          onComplete={(c) => setCompletedCrop(c)}
+          aspect={aspectRatio}
+          disabled={isCropDisabled}
+          minHeight={100}
         >
             <img
                 ref={imgRef}
                 alt="Crop me"
                 src={fileData}
-                style={{ transform: `scale(${scale}) rotate(${rotate}deg)` }}
+                width={"inherit"}
+                height={"inherit"}
+                style={{ transform: `scale(${scale}) rotate(${rotate}deg) translateX(${translateX}px) translateY(${translateY}px)` }}
                 onLoad={onImageLoad}
             />
         </ReactCrop>
+      </Box>
     );
 }

@@ -8,6 +8,10 @@ import ImageUploader from "./ImageUploader";
 import ImagesList from "./ImagesList";
 import ImageCropper from "./ImageCropper";
 
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
+import GenericNotification from "@/components/globals/GenericNotification";
+
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -36,24 +40,26 @@ export default function ImageViewer() {
             setSelectedFileData
         }}>
             <Alert isTimer isWarningIcon />
-        <ResponsiveGridLayout
-            className="layout"
-            maxRows={12}
-            style={{  width: '90%' }}
-            isBounded
-            rowHeight={50}
-            autoSize
-            margin={[12, 10]}
-            compactType={"horizontal"}
-            layouts={initial2ColImgVIewerLayout}
-            breakpoints={{ lg: 1200, md: 980, sm: 768, xs: 480, xxs: 0 }}
-            cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}>
-            <Card key="a" variant="surface">
-                <ImageUploader />
-                <ImagesList />
-            </Card>
-            <Card key="b" variant="surface"><ImageCropper /></Card>
-        </ResponsiveGridLayout>
+            <GenericNotification message="Cards cann be dragged to resize height" />
+            <ResponsiveGridLayout
+                className="layout"
+                isResizable
+                resizeHandles={["e", "s", "se"]}
+                rowHeight={50}
+                style={{ width: "98%"}}
+                useCSSTransforms={true}
+                margin={[12, 8]}
+                layouts={initial2ColImgVIewerLayout}
+                breakpoints={{ lg: 1200, md: 980, sm: 768, xs: 480, xxs: 0 }}
+                cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}>
+                <Card key="a" variant="surface">
+                    <ImageUploader />
+                    <ImagesList />
+                </Card>
+                <Card key="b" variant="surface">
+                    <ImageCropper />
+                </Card>
+            </ResponsiveGridLayout>
         </ImageProcessorProvider.Provider>
     )
 }

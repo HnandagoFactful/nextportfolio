@@ -1,7 +1,7 @@
 import ImageProcessorProvider from "@/providers/ImageProcessorProvider";
 import { Box, Card, Flex, IconButton, Popover, Text } from "@radix-ui/themes";
 import { Cross2Icon, EyeOpenIcon } from "@radix-ui/react-icons";
-import { ChangeEventHandler, use } from "react";
+import { use } from "react";
 
 export default function ImagesList() {
     const uploaderContext = use(ImageProcessorProvider);
