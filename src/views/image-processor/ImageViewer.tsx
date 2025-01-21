@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import { Card } from "@radix-ui/themes";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import Alert from "@/components/globals/Alert";
@@ -11,11 +11,16 @@ import ImageCropper from "./ImageCropper";
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import GenericNotification from "@/components/globals/GenericNotification";
+import { TranslationProvider } from "@/providers/TranslationProvider";
+import { useTranslations } from "next-intl";
+import ConversionControls from "./ConversionControls";
 
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 export default function ImageViewer() {
+    const translationProvider = use(TranslationProvider) 
+    const translations = useTranslations(translationProvider.pageName)
     const [fileData, setFileData] = useState<File[] | undefined>(undefined);
     const [selectedFileData, setSelectedFileData] = useState<File | undefined>(undefined);
 
@@ -40,7 +45,7 @@ export default function ImageViewer() {
             setSelectedFileData
         }}>
             <Alert isTimer isWarningIcon />
-            <GenericNotification message="Cards cann be dragged to resize height" />
+            <GenericNotification message={translations('cardDragNotification')} />
             <ResponsiveGridLayout
                 className="layout"
                 isResizable
@@ -58,6 +63,9 @@ export default function ImageViewer() {
                 </Card>
                 <Card key="b" variant="surface">
                     <ImageCropper />
+                </Card>
+                <Card key="c">
+                    <ConversionControls />
                 </Card>
             </ResponsiveGridLayout>
         </ImageProcessorProvider.Provider>

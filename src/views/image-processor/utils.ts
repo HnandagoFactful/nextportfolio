@@ -1,4 +1,4 @@
-import { PixelCrop } from 'react-image-crop'
+import { centerCrop, makeAspectCrop, PixelCrop } from 'react-image-crop'
 
 const TO_RADIANS = Math.PI / 180
 
@@ -62,4 +62,64 @@ export async function canvasPreview(
   )
 
   ctx.restore()
+}
+
+export function centerAspectCrop(
+    mediaWidth: number,
+    mediaHeight: number,
+    aspect: number,
+  ) {
+    return centerCrop(
+      makeAspectCrop(
+        {
+          unit: '%',
+          width: 90,
+        },
+        aspect,
+        mediaWidth,
+        mediaHeight,
+      ),
+      mediaWidth,
+      mediaHeight,
+    )
+}
+
+export async function downloadImageFromPreview(
+  image: HTMLImageElement,
+  previewCanvas: HTMLCanvasElement,
+  completedCrop: PixelCrop,
+  type = 'image/png'
+) {
+  const scaleX = image.naturalWidth / image.width
+      const scaleY = image.naturalHeight / image.height
+  
+      const offscreen = new OffscreenCanvas(
+        completedCrop.width * scaleX,
+        completedCrop.height * scaleY,
+      )
+      const ctx = offscreen.getContext('2d')
+      if (!ctx) {
+        throw new Error('No 2d context')
+      }
+  
+      ctx.drawImage(
+        previewCanvas,
+        0,
+        0,
+        previewCanvas.width,
+        previewCanvas.height,
+        0,
+        0,
+        offscreen.width,
+        offscreen.height,
+      )
+      // You might want { type: "image/jpeg", quality: <0 to 1> } to
+      // reduce image size
+      const blob = await offscreen.convertToBlob({
+        type: type,
+      })
+
+      return blob;
+  
+      
 }

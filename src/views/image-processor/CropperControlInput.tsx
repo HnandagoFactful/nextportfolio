@@ -8,6 +8,7 @@ export interface ICropperControlInput {
     value: number | undefined;
     step: number;
     withCheckBox?: boolean;
+    placeholder?: string;
     updaterPlus: () => void;
     updaterMinus: () => void;
     onCheckedChange?: (value: boolean) => void;
@@ -20,6 +21,7 @@ export default function CropperControlInput({
     value,
     step,
     withCheckBox = false,
+    placeholder = "Increase or decrease value",
     updaterPlus,
     updaterMinus,
     onCheckedChange,
@@ -38,7 +40,7 @@ export default function CropperControlInput({
                 type="number"
                 value={value ?? -1}
                 step={step}
-                placeholder="Increase Aspect ratio"
+                placeholder={placeholder}
                 onChange={onChange}>
                 <TextField.Slot>
                     <IconButton size="1" variant="ghost" onClick={updaterPlus} 
