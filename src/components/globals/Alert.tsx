@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { use, useEffect } from "react";
 import { Callout } from "@radix-ui/themes";
 import pageProvider from "@/providers/PageProvider";

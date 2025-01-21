@@ -17,7 +17,7 @@ export default function Navigation() {
                 gap={"3"}
                 align={"center"}
                 justify={"end"}
-                width={"75%"}
+                width={"200px"}
                 className='mr-4'>
                 <NavItems />
             </Flex>

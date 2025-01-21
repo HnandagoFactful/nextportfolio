@@ -1,6 +1,4 @@
 "use client"
-
-import { time } from "console"
 import * as motion from "motion/react-client"
 
 export default function AnimatedCounter({
@@ -21,7 +19,7 @@ export default function AnimatedCounter({
 
     const draw = {
         hidden: { pathLength: 0, },
-        visible: (i: number) => {
+        visible: () => {
             return {
                 pathLength: 1,
                 opacity: 1,

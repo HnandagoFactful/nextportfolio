@@ -1,7 +1,7 @@
 import ImageProcessorProvider from "@/providers/ImageProcessorProvider";
 import { Box, Card, Flex, IconButton, Popover, Text } from "@radix-ui/themes";
 import { Cross2Icon, EyeOpenIcon } from "@radix-ui/react-icons";
-import { ChangeEventHandler, use } from "react";
+import { use } from "react";
 
 export default function ImagesList() {
     const uploaderContext = use(ImageProcessorProvider);
@@ -14,13 +14,12 @@ export default function ImagesList() {
         <>
             <Popover.Root>
                 <Popover.Trigger>
-                    <Box className="pt-4 flex flex-row gap-8 items-center">
-                        <Text size="4" as="p">Uploaded Images: {uploaderContext.data.length}</Text>
-
-                        <IconButton color="lime"><EyeOpenIcon height={24} width={24} /></IconButton>
+                    <Box className="pt-4 flex flex-row gap-3 items-center">
+                        <Text size="2" color="lime" as="p">Uploaded Images: {uploaderContext.data.length}</Text>
+                        <IconButton color="lime" className="p-0"><EyeOpenIcon height={19} width={19} /></IconButton>
                     </Box>
                 </Popover.Trigger>
-                <Popover.Content width="360px">
+                <Popover.Content width="360px" height={"200px"}>
                     <Flex direction={"column"} wrap={"wrap"} gap={"3"}>
                         {uploaderContext.data.map((item: File, index: number) => {
                             return (

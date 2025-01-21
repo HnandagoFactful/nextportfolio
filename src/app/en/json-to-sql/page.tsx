@@ -97,7 +97,11 @@ export default function JsonToSql() {
     }
 
     return (<pageProvider.Provider value={{
-        pageName: 'home'
+        pageName: 'home',
+        alert: undefined,
+        alertType: undefined,
+        resetAlert: () => {},
+        setAlertContentType: () => {}
     }}>
         <ContainerLayout pageName="home">
             <ErrorBoundary fallback={<div>Something went wrong</div>}>

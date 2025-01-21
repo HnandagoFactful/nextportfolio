@@ -34,7 +34,7 @@
                     "name": "Home",
                     "alias": "home",
                     "path": "/en",
-                    "isVisible": true
+                    "isVisible": false
                 },
                 {
                     "name": "Detail",
@@ -54,13 +54,13 @@
     },
     "imageprocessor": {
         "global": {
-            "project": "Portfolio",
+            "project": "Image Manipulator",
             "navigation": [
                 {
                     "name": "Home",
                     "alias": "home",
                     "path": "/en",
-                    "isVisible": true
+                    "isVisible": false
                 },
                 {
                     "name": "Images",
@@ -82,6 +82,19 @@
                 }
             ]
         },
-        "project": "Portfolio"
+        "project": "Image Manipulator",
+        "cardDragNotification": "Card can be resized to view full image for cropping",
+        "uploadImage": "Upload Images",
+        "uploadImagePlaceholder": "Upload the images",
+        "uploadImageInputName": "Image uploader",
+        "imageExists": "Image already exists",
+        "aspectRatio": "Aspect Ratio",
+        "scale": "Scale",
+        "transitionX": "Move lef to right",
+        "transitionY": "Move up or down",
+        "allow": "Allow",
+        "allowInput": "Allow {input}",
+        "rotateImage": "Rotate image",
+        "increaseInput": "Increase {inputName}"
     }
 }
