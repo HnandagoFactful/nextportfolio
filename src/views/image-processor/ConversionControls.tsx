@@ -20,37 +20,33 @@ export default function ConversionControls() {
     });
 
     const getConvertedFile = async function() {
+        if (!processorProvider.selectedFileData || !selectedImageFormat) return
         setIsApiDispatched(true);
         try {
-            if (processorProvider.selectedFileData && selectedImageFormat) {
-                const response = await imageConversion({
-                    data: processorProvider.selectedFileData,
-                    format: selectedImageFormat,
-                    flip: canFlip ? '1' : '0',
-                    resize: [resize.height, resize.width]
-                });
+            const response = await imageConversion({
+                data: processorProvider.selectedFileData,
+                format: selectedImageFormat,
+                flip: canFlip ? '1' : '0',
+                resize: [resize.height, resize.width]
+            });
 
-                transition(() => {
-                    setIsApiDispatched(false);
-                    pageContext.setAlertContentType('Image converted successfully',  'success')
-                });
-                if (response) {
-                    blobUrlRef.current = URL.createObjectURL(response)
-        
-                    if (hiddenAnchorRef.current) {
-                        hiddenAnchorRef.current.href = blobUrlRef.current
-                        hiddenAnchorRef.current.click()
-                    }
-                    dialogCloseRef.current?.click?.()
-                } else {
-                    throw 'Error';
-                }
+            if (!response) throw new Error('Conversion API returned no data')
+
+            blobUrlRef.current = URL.createObjectURL(response)
+            if (hiddenAnchorRef.current) {
+                hiddenAnchorRef.current.href = blobUrlRef.current
+                hiddenAnchorRef.current.click()
             }
+            dialogCloseRef.current?.click?.()
+            transition(() => {
+                setIsApiDispatched(false);
+                pageContext.setAlertContentType('Image converted successfully', 'success')
+            });
         } catch(e) {
             transition(() => {
                 console.log(e);
                 setIsApiDispatched(false);
-                pageContext.setAlertContentType('Failed to convert image',  'error')
+                pageContext.setAlertContentType('Failed to convert image', 'error')
             });
         }
     }
@@ -198,7 +194,7 @@ export default function ConversionControls() {
                             </Flex>
                         </Text>
                     </Box>
-                    <Box className="w-[80px]">
+                    <Box className="w-[90px]">
                         <Text color="lime" as="label" size="2">
                             <Flex gap="2">
                                 <Checkbox color="lime" checked={selectedImageFormat === "webp"}

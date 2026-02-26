@@ -69,6 +69,12 @@
                     "isVisible": true
                 },
                 {
+                    "name": "Canvas",
+                    "alias": "canvas",
+                    "path": "/en/canvas",
+                    "isVisible": true
+                },
+                {
                     "name": "Detail",
                     "alias": "detail",
                     "path": "/en/detail",
@@ -83,6 +89,7 @@
             ]
         },
         "project": "Image Manipulator",
+        "canvas": "Canvas",
         "cardDragNotification": "Card can be resized to view full image for cropping",
         "uploadImage": "Upload Images",
         "uploadImagePlaceholder": "Upload the images",
@@ -96,5 +103,55 @@
         "allowInput": "Allow {input}",
         "rotateImage": "Rotate image",
         "increaseInput": "Increase {inputName}"
+    },
+    "canvas": {
+        "global": {
+            "project": "Canvas",
+            "navigation": [
+                {
+                    "name": "Images",
+                    "alias": "imageprocessor",
+                    "path": "/en/image-process",
+                    "isVisible": true
+                },
+                {
+                    "name": "Canvas",
+                    "alias": "canvas",
+                    "path": "/en/canvas",
+                    "isVisible": true
+                }
+            ]
+        },
+        "project": "Canvas",
+        "toolbar": {
+            "select": "Select",
+            "rect": "Rectangle",
+            "circle": "Circle",
+            "triangle": "Triangle",
+            "line": "Line",
+            "text": "Text",
+            "pencil": "Pencil",
+            "image": "Add Image",
+            "video": "Add Video"
+        },
+        "layers": {
+            "title": "Layers",
+            "empty": "No objects on canvas"
+        },
+        "properties": {
+            "title": "Properties",
+            "fill": "Fill Color",
+            "stroke": "Stroke Color",
+            "strokeWidth": "Stroke Width",
+            "opacity": "Opacity",
+            "shadow": "Shadow",
+            "shadowColor": "Shadow Color",
+            "shadowBlur": "Blur",
+            "shadowOffsetX": "Shadow X",
+            "shadowOffsetY": "Shadow Y",
+            "brushColor": "Brush Color",
+            "brushWidth": "Brush Thickness",
+            "apply": "Apply"
+        }
     }
 }

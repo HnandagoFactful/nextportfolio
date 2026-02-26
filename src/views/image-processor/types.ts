@@ -25,4 +25,5 @@ export interface ICropperControls {
     setTranslateY?: Dispatch<SetStateAction<number>>;
     setIsCropDisabled: Dispatch<SetStateAction<boolean>>;
     onDownload: (ref: HTMLCanvasElement, isSaveToList?: boolean) => Promise<void>;
+    onCenter: () => void;
 }

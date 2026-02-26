@@ -61,7 +61,8 @@ export default function ImageViewer() {
                     <ImageUploader />
                     <ImagesList />
                 </Card>
-                <Card key="b" variant="surface">
+                {/* height:100% fills the react-grid-layout cell; flex-col lets ImageCropper expand */}
+                <Card key="b" variant="surface" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                     <ImageCropper />
                 </Card>
                 <Card key="c">
