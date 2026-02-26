@@ -14,6 +14,7 @@ import { canvasViewerLayout } from "./layouts";
 import CanvasStage from "./CanvasStage";
 import CanvasToolbar from "./CanvasToolbar";
 import RightPanel from "./RightPanel";
+import PathDrawerDialog from "./PathDrawerDialog";
 import { useCanvasInit } from "./hooks/useCanvasInit";
 import { useCanvasEvents } from "./hooks/useCanvasEvents";
 import { useVideoLoop } from "./hooks/useVideoLoop";
@@ -58,6 +59,9 @@ export default function CanvasViewer() {
   const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
   const [properties, setPropertiesState] = useState<IObjectProperties>(DEFAULT_PROPERTIES);
   const [videoObjects, setVideoObjects] = useState<Array<{ id: string; videoEl: HTMLVideoElement }>>([]);
+  const [textPathId, setTextPathId] = useState<string | null>(null);
+  const [textPathOffset, setTextPathOffset] = useState(0);
+  const [pathDrawerOpen, setPathDrawerOpen] = useState(false);
 
   // ---- Canvas init ----
   useCanvasInit(containerRef, canvasElRef, (canvas) => {
@@ -226,6 +230,116 @@ export default function CanvasViewer() {
     (canvas.freeDrawingBrush as { width: number }).width = properties.brushWidth;
   }, [properties.brushColor, properties.brushWidth, activeTool]);
 
+  // ---- Auto-populate properties from selected layer ----
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !selectedLayerId) { setTextPathId(null); setTextPathOffset(0); return; }
+    const obj = canvas.getObjects().find(
+      (o) => (o as FabricObject & { canvasId?: string }).canvasId === selectedLayerId
+    );
+    if (!obj) { setTextPathId(null); setTextPathOffset(0); return; }
+
+    const s = obj.shadow as (Record<string, unknown> | null);
+    setPropertiesState((prev) => ({
+      ...prev,
+      fillColor:   typeof obj.fill   === 'string' ? obj.fill   : prev.fillColor,
+      strokeColor: typeof obj.stroke === 'string' ? obj.stroke : prev.strokeColor,
+      strokeWidth: obj.strokeWidth ?? prev.strokeWidth,
+      opacity:     obj.opacity     ?? prev.opacity,
+      shadow: s ? {
+        color:   (s.color   as string)  || prev.shadow.color,
+        blur:    (s.blur    as number)  ?? prev.shadow.blur,
+        offsetX: (s.offsetX as number)  ?? prev.shadow.offsetX,
+        offsetY: (s.offsetY as number)  ?? prev.shadow.offsetY,
+      } : { color: '#000000', blur: 0, offsetX: 0, offsetY: 0 },
+    }));
+
+    // Read text-on-path assignment
+    type SelTextLike = FabricObject & { path?: unknown; pathStartOffset?: number };
+    const tobj = obj as SelTextLike;
+    if (tobj.path) {
+      // Is the path a canvas-level object we can identify by canvasId?
+      const matched = canvas.getObjects().find(o => o === tobj.path);
+      if (matched) {
+        setTextPathId((matched as FabricObject & { canvasId?: string }).canvasId ?? '__drawn__');
+      } else {
+        // In-memory path drawn via the dialog
+        setTextPathId('__drawn__');
+      }
+      setTextPathOffset(tobj.pathStartOffset ?? 0);
+    } else {
+      setTextPathId(null);
+      setTextPathOffset(0);
+    }
+  }, [selectedLayerId]);
+
+  // ---- Text on path ----
+  type TextLike = { path?: unknown; pathStartOffset?: number; setCoords?(): void };
+
+  const applyPathToText = useCallback((pathId: string | null, offset: number) => {
+    const canvas = canvasRef.current;
+    if (!canvas || !selectedLayerId) return;
+    const textObj = canvas.getObjects().find(
+      (o) => (o as FabricObject & { canvasId?: string }).canvasId === selectedLayerId
+    ) as unknown as TextLike | undefined;
+    if (!textObj) return;
+
+    if (pathId === null) {
+      // Clear drawn or canvas-object path
+      textObj.path = undefined;
+      textObj.pathStartOffset = 0;
+      setTextPathId(null);
+      setTextPathOffset(0);
+    } else if (pathId === '__drawn__') {
+      // Drawn in-memory path — just update offset on the already-assigned path
+      textObj.pathStartOffset = offset;
+      setTextPathOffset(offset);
+    } else {
+      const pathObj = canvas.getObjects().find(
+        (o) => (o as FabricObject & { canvasId?: string }).canvasId === pathId
+      );
+      if (!pathObj) return;
+      textObj.path = pathObj;
+      textObj.pathStartOffset = offset;
+      setTextPathId(pathId);
+      setTextPathOffset(offset);
+    }
+    textObj.setCoords?.();
+    canvas.requestRenderAll();
+  }, [selectedLayerId]);
+
+  // Apply a hand-drawn path (from PathDrawerDialog) to the selected text object.
+  // The path is kept in memory only — not added to the canvas layers.
+  // Font size is auto-calculated from path length (matches the Fabric.js demo formula).
+  const applyDrawnPath = useCallback(async (pathCommands: unknown[][], pathLength: number) => {
+    const canvas = canvasRef.current;
+    if (!canvas || !selectedLayerId) return;
+    const textObj = canvas.getObjects().find(
+      (o) => (o as FabricObject & { canvasId?: string }).canvasId === selectedLayerId
+    ) as unknown as TextLike & { text?: string; fontSize?: number; set(opts: Record<string, unknown>): void } | undefined;
+    if (!textObj) return;
+
+    const { Path } = await import('fabric');
+    // In-memory guide path — not added to canvas so it won't appear in layers
+    const guidePath = new Path(pathCommands as unknown as string, {
+      fill: '',
+      stroke: 'transparent',
+    });
+
+    textObj.path = guidePath;
+    textObj.pathStartOffset = 0;
+
+    // Auto-size: 2.5 × pathLength ÷ char count (same formula as the official demo)
+    const charCount = (textObj.text?.length ?? 1) || 1;
+    const autoFontSize = Math.round((2.5 * pathLength) / charCount);
+    if (autoFontSize > 0) textObj.set({ fontSize: autoFontSize });
+
+    textObj.setCoords?.();
+    setTextPathId('__drawn__');
+    setTextPathOffset(0);
+    canvas.requestRenderAll();
+  }, [selectedLayerId]);
+
   // ---- Helpers ----
   const setProperties = useCallback((patch: Partial<IObjectProperties>) => {
     setPropertiesState(prev => ({ ...prev, ...patch }));
@@ -234,23 +348,34 @@ export default function CanvasViewer() {
   const applyPropertiesToSelection = useCallback(async () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const obj = canvas.getActiveObject();
-    if (!obj) return;
+    const active = canvas.getActiveObject();
+    if (!active) return;
 
     const { Shadow } = await import('fabric');
     const shadow = new Shadow({
-      color: properties.shadow.color,
-      blur: properties.shadow.blur,
+      color:   properties.shadow.color,
+      blur:    properties.shadow.blur,
       offsetX: properties.shadow.offsetX,
       offsetY: properties.shadow.offsetY,
     });
 
-    obj.set({
-      fill: properties.fillColor,
-      stroke: properties.strokeColor,
-      strokeWidth: properties.strokeWidth,
-      opacity: properties.opacity,
-      shadow,
+    // For an ActiveSelection (multi-checkbox), apply to each child individually.
+    // For a single object or Group, apply directly.
+    // Use .type check instead of instanceof — dynamic imports don't satisfy
+    // TypeScript's instanceof type narrowing reliably.
+    const targets: FabricObject[] =
+      active.type === 'activeSelection'
+        ? (active as unknown as { getObjects(): FabricObject[] }).getObjects()
+        : [active];
+
+    targets.forEach((obj) => {
+      obj.set({
+        fill:        properties.fillColor,
+        stroke:      properties.strokeColor,
+        strokeWidth: properties.strokeWidth,
+        opacity:     properties.opacity,
+        shadow,
+      });
     });
     canvas.requestRenderAll();
   }, [properties]);
@@ -281,6 +406,124 @@ export default function CanvasViewer() {
       }
       return prev.filter(v => v.id !== id);
     });
+  }, []);
+
+  const removeLayerById = useCallback((id: string) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const obj = canvas.getObjects().find(
+      (o) => (o as FabricObject & { canvasId?: string }).canvasId === id
+    );
+    if (!obj) return;
+    if (canvas.getActiveObject() === obj) canvas.discardActiveObject();
+    canvas.remove(obj);
+    canvas.requestRenderAll();
+    removeVideoObject(id);
+  }, [removeVideoObject]);
+
+  const renameLayerById = useCallback((id: string, label: string) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const obj = canvas.getObjects().find(
+      (o) => (o as FabricObject & { canvasId?: string }).canvasId === id
+    );
+    if (!obj) return;
+    (obj as FabricObject & { canvasLabel?: string }).canvasLabel = label.trim() || undefined;
+    // Re-sync layers so the new label reflects immediately
+    setLayers(
+      canvas.getObjects().map((o, index) => {
+        const lo = o as FabricObject & { canvasId?: string; canvasLabel?: string };
+        const typeMap: Record<string, string> = {
+          rect: 'Rectangle', circle: 'Circle', ellipse: 'Ellipse', triangle: 'Triangle',
+          line: 'Line', 'i-text': 'Text', path: 'Path', image: 'Image', group: 'Group',
+        };
+        const fallback = `${typeMap[o.type ?? ''] ?? (o.type ?? 'Object')} ${index + 1}`;
+        return {
+          id: lo.canvasId ?? String(index),
+          type: o.type ?? 'object',
+          label: lo.canvasLabel ?? fallback,
+        };
+      })
+    );
+  }, []);
+
+  const reorderLayerById = useCallback((id: string, direction: 'up' | 'down') => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const obj = canvas.getObjects().find(
+      (o) => (o as FabricObject & { canvasId?: string }).canvasId === id
+    );
+    if (!obj) return;
+    if (direction === 'up') {
+      canvas.bringObjectForward(obj);
+    } else {
+      canvas.sendObjectBackwards(obj);
+    }
+    canvas.requestRenderAll();
+    // bringObjectForward/sendObjectBackwards don't fire object:modified,
+    // so sync the layers list manually to reflect the new z-order.
+    const typeMap: Record<string, string> = {
+      rect: 'Rectangle', circle: 'Circle', ellipse: 'Ellipse', triangle: 'Triangle',
+      line: 'Line', 'i-text': 'Text', path: 'Path', image: 'Image', group: 'Group',
+    };
+    setLayers(
+      canvas.getObjects().map((o, index) => {
+        const lo = o as FabricObject & { canvasId?: string; canvasLabel?: string };
+        const fallback = `${typeMap[o.type ?? ''] ?? (o.type ?? 'Object')} ${index + 1}`;
+        return {
+          id: lo.canvasId ?? String(index),
+          type: o.type ?? 'object',
+          label: lo.canvasLabel ?? fallback,
+        };
+      })
+    );
+  }, []);
+
+  // Sync checkbox selection → Fabric ActiveSelection so checked objects
+  // can be moved together before a permanent Group is committed.
+  const handleCheckLayers = useCallback(async (ids: string[]) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    if (ids.length === 0) {
+      canvas.discardActiveObject();
+      canvas.requestRenderAll();
+      return;
+    }
+
+    const objects = ids
+      .map((id) => canvas.getObjects().find((o) => (o as FabricObject & { canvasId?: string }).canvasId === id))
+      .filter(Boolean) as FabricObject[];
+
+    if (objects.length === 1) {
+      canvas.setActiveObject(objects[0]);
+    } else {
+      const { ActiveSelection } = await import('fabric');
+      const selection = new ActiveSelection(objects, { canvas });
+      canvas.setActiveObject(selection);
+    }
+    canvas.requestRenderAll();
+  }, []);
+
+  // Convert the checked ActiveSelection into a permanent fabric.Group.
+  const handleGroupChecked = useCallback(async (ids: string[]) => {
+    const canvas = canvasRef.current;
+    if (!canvas || ids.length < 2) return;
+
+    const objects = ids
+      .map((id) => canvas.getObjects().find((o) => (o as FabricObject & { canvasId?: string }).canvasId === id))
+      .filter(Boolean) as FabricObject[];
+
+    if (objects.length < 2) return;
+
+    const { Group } = await import('fabric');
+    canvas.discardActiveObject();
+    objects.forEach((obj) => canvas.remove(obj));
+    const group = new Group(objects);
+    assignId(group);
+    canvas.add(group);
+    canvas.setActiveObject(group);
+    canvas.requestRenderAll();
   }, []);
 
   // ---- Image upload handler ----
@@ -364,6 +607,12 @@ export default function CanvasViewer() {
 
       <Alert isTimer isWarningIcon />
 
+      <PathDrawerDialog
+        open={pathDrawerOpen}
+        onClose={() => setPathDrawerOpen(false)}
+        onApply={applyDrawnPath}
+      />
+
       <ResponsiveGridLayout
         className="layout"
         isResizable
@@ -389,8 +638,17 @@ export default function CanvasViewer() {
             properties={properties}
             activeTool={activeTool}
             onSelectLayer={selectLayerById}
+            onRemoveLayer={removeLayerById}
+            onReorderLayer={reorderLayerById}
+            onCheckLayers={handleCheckLayers}
+            onGroupChecked={handleGroupChecked}
+            onRenameLayer={renameLayerById}
             onPropertyChange={setProperties}
             onApply={applyPropertiesToSelection}
+            textPathId={textPathId}
+            textPathOffset={textPathOffset}
+            onApplyTextOnPath={applyPathToText}
+            onOpenPathDrawer={() => setPathDrawerOpen(true)}
           />
         </Card>
       </ResponsiveGridLayout>

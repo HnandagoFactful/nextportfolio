@@ -2,7 +2,10 @@ import { useEffect, RefObject } from "react";
 import type { Canvas as FabricCanvas, FabricObject } from "fabric";
 import type { ICanvasLayer } from "@/providers/CanvasProvider";
 
-function buildLabel(type: string | undefined, index: number): string {
+type LabelledObject = FabricObject & { canvasId?: string; canvasLabel?: string };
+
+function buildLabel(obj: LabelledObject, index: number): string {
+  if (obj.canvasLabel) return obj.canvasLabel;
   const typeMap: Record<string, string> = {
     rect: 'Rectangle',
     circle: 'Circle',
@@ -14,7 +17,7 @@ function buildLabel(type: string | undefined, index: number): string {
     image: 'Image',
     group: 'Group',
   };
-  const name = typeMap[type ?? ''] ?? (type ?? 'Object');
+  const name = typeMap[obj.type ?? ''] ?? (obj.type ?? 'Object');
   return `${name} ${index + 1}`;
 }
 
@@ -30,11 +33,14 @@ export function useCanvasEvents(
     const syncLayers = () => {
       const objects = canvas.getObjects();
       setLayers(
-        objects.map((obj, index) => ({
-          id: (obj as FabricObject & { canvasId?: string }).canvasId ?? String(index),
-          type: obj.type ?? 'object',
-          label: buildLabel(obj.type, index),
-        }))
+        objects.map((obj, index) => {
+          const lo = obj as LabelledObject;
+          return {
+            id: lo.canvasId ?? String(index),
+            type: obj.type ?? 'object',
+            label: buildLabel(lo, index),
+          };
+        })
       );
     };
 
@@ -50,7 +56,8 @@ export function useCanvasEvents(
     canvas.on('object:modified', syncLayers);
     canvas.on('selection:created', onSelectionChange);
     canvas.on('selection:updated', onSelectionChange);
-    canvas.on('selection:cleared', () => setSelectedLayerId(null));
+    const onSelectionCleared = () => setSelectedLayerId(null);
+    canvas.on('selection:cleared', onSelectionCleared);
 
     return () => {
       canvas.off('object:added', syncLayers);
@@ -58,7 +65,7 @@ export function useCanvasEvents(
       canvas.off('object:modified', syncLayers);
       canvas.off('selection:created', onSelectionChange);
       canvas.off('selection:updated', onSelectionChange);
-      canvas.off('selection:cleared');
+      canvas.off('selection:cleared', onSelectionCleared);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canvasRef.current]);

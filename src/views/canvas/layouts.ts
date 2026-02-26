@@ -3,8 +3,8 @@ import { Layout } from "react-grid-layout";
 export const canvasViewerLayout: { [key: string]: Layout[] } = {
   lg: [
     { i: 'a', x: 0, y: 0, w: 1, minW: 1, maxW: 2, h: 18, minH: 10, isDraggable: false, isResizable: false },
-    { i: 'b', x: 1, y: 0, w: 7, minW: 4, maxW: 10, h: 18, minH: 10, isDraggable: false, isResizable: true },
-    { i: 'c', x: 8, y: 0, w: 4, minW: 2, maxW: 5, h: 18, minH: 10, isDraggable: false, isResizable: true },
+    { i: 'b', x: 1, y: 0, w: 9, minW: 4, maxW: 10, h: 18, minH: 10, isDraggable: false, isResizable: true },
+    { i: 'c', x: 10, y: 0, w: 2, minW: 2, maxW: 5, h: 18, minH: 10, isDraggable: false, isResizable: true },
   ],
   md: [
     { i: 'a', x: 0, y: 0, w: 1, minW: 1, maxW: 2, h: 18, minH: 10, isDraggable: false, isResizable: false },

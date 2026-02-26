@@ -1,4 +1,5 @@
 import { Flex, Text, Button, Checkbox, Separator } from "@radix-ui/themes";
+import { Pencil1Icon } from "@radix-ui/react-icons";
 import { IPropertiesPanel } from "./types";
 
 function ColorInput({
@@ -68,13 +69,22 @@ function NumberInput({
 export default function PropertiesPanel({
   properties,
   activeTool,
+  layers,
+  selectedLayerId,
+  textPathId,
+  textPathOffset,
   onPropertyChange,
   onApply,
+  onApplyTextOnPath,
+  onOpenPathDrawer,
 }: IPropertiesPanel) {
   const showFill = activeTool !== 'pencil' && activeTool !== 'line';
   const showBrush = activeTool === 'pencil';
   const showShadow = !['pencil', 'line', 'image', 'video', 'select'].includes(activeTool);
   const shadowEnabled = properties.shadow.blur > 0 || properties.shadow.offsetX !== 0 || properties.shadow.offsetY !== 0;
+
+  const selectedLayerType = layers.find(l => l.id === selectedLayerId)?.type;
+  const showTextOnPath = selectedLayerType === 'i-text';
 
   return (
     <Flex direction="column" gap="3" style={{ overflowY: 'auto', height: '100%', padding: '4px 2px' }}>
@@ -173,6 +183,44 @@ export default function PropertiesPanel({
             max={100}
             onChange={(v) => onPropertyChange({ brushWidth: v })}
           />
+        </>
+      )}
+
+      {showTextOnPath && (
+        <>
+          <Separator size="4" />
+          <Text size="1" weight="bold" color="lime">Text on Path</Text>
+          <Flex gap="2">
+            <Button
+              size="1"
+              variant="soft"
+              color="lime"
+              style={{ flex: 1 }}
+              onClick={onOpenPathDrawer}
+            >
+              <Pencil1Icon />
+              {textPathId ? 'Redraw Path' : 'Draw Path'}
+            </Button>
+            {textPathId && (
+              <Button
+                size="1"
+                variant="ghost"
+                color="red"
+                onClick={() => onApplyTextOnPath(null, 0)}
+              >
+                Remove
+              </Button>
+            )}
+          </Flex>
+          {textPathId && (
+            <NumberInput
+              label="Path Offset"
+              value={textPathOffset}
+              min={0}
+              max={2000}
+              onChange={(v) => onApplyTextOnPath(textPathId, v)}
+            />
+          )}
         </>
       )}
 

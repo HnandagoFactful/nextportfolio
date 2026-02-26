@@ -9,8 +9,17 @@ export default function RightPanel({
   properties,
   activeTool,
   onSelectLayer,
+  onRemoveLayer,
+  onReorderLayer,
+  onCheckLayers,
+  onGroupChecked,
+  onRenameLayer,
   onPropertyChange,
   onApply,
+  textPathId,
+  textPathOffset,
+  onApplyTextOnPath,
+  onOpenPathDrawer,
 }: IRightPanel) {
   return (
     <Tabs.Root defaultValue="layers" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -29,14 +38,25 @@ export default function RightPanel({
             layers={layers}
             selectedLayerId={selectedLayerId}
             onSelectLayer={onSelectLayer}
+            onRemoveLayer={onRemoveLayer}
+            onReorderLayer={onReorderLayer}
+            onCheckLayers={onCheckLayers}
+            onGroupChecked={onGroupChecked}
+            onRenameLayer={onRenameLayer}
           />
         </Tabs.Content>
         <Tabs.Content value="properties" style={{ flex: 1, height: '100%', overflow: 'hidden' }}>
           <PropertiesPanel
             properties={properties}
             activeTool={activeTool}
+            layers={layers}
+            selectedLayerId={selectedLayerId}
+            textPathId={textPathId}
+            textPathOffset={textPathOffset}
             onPropertyChange={onPropertyChange}
             onApply={onApply}
+            onApplyTextOnPath={onApplyTextOnPath}
+            onOpenPathDrawer={onOpenPathDrawer}
           />
         </Tabs.Content>
       </Flex>

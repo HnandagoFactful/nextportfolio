@@ -51,7 +51,13 @@ export default function CanvasToolbar() {
             variant={activeTool === tool ? 'solid' : 'soft'}
             color={activeTool === tool ? 'lime' : 'gray'}
             size="2"
-            onClick={() => setActiveTool(tool)}
+            onClick={() => {
+              if (activeTool === tool) {
+                setActiveTool('select');
+              } else {
+                setActiveTool(tool);
+              }
+            }}
             aria-label={label}
           >
             {icon}
