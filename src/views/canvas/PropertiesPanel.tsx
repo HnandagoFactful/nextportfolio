@@ -1,6 +1,11 @@
 import { Flex, Text, Button, Checkbox, Separator } from "@radix-ui/themes";
-import { Pencil1Icon } from "@radix-ui/react-icons";
+import { FontBoldIcon, FontItalicIcon, Pencil1Icon } from "@radix-ui/react-icons";
 import { IPropertiesPanel } from "./types";
+
+const FONT_FAMILIES = [
+  'Arial', 'Helvetica', 'Georgia', 'Times New Roman',
+  'Courier New', 'Verdana', 'Trebuchet MS', 'Impact',
+];
 
 function ColorInput({
   label,
@@ -84,6 +89,8 @@ export default function PropertiesPanel({
   const shadowEnabled = properties.shadow.blur > 0 || properties.shadow.offsetX !== 0 || properties.shadow.offsetY !== 0;
 
   const selectedLayerType = layers.find(l => l.id === selectedLayerId)?.type;
+  const isTextSelected = selectedLayerType === 'i-text' || selectedLayerType === 'text';
+  const showTypography = activeTool === 'text' || isTextSelected;
   const showTextOnPath = selectedLayerType === 'i-text';
 
   return (
@@ -183,6 +190,61 @@ export default function PropertiesPanel({
             max={100}
             onChange={(v) => onPropertyChange({ brushWidth: v })}
           />
+        </>
+      )}
+
+      {showTypography && (
+        <>
+          <Separator size="4" />
+          <Text size="1" weight="bold" color="lime">Typography</Text>
+          <Flex align="center" justify="between" gap="2">
+            <Text size="1" style={{ minWidth: 80 }}>Font</Text>
+            <select
+              value={properties.fontFamily}
+              onChange={(e) => onPropertyChange({ fontFamily: e.target.value })}
+              style={{
+                flex: 1,
+                padding: '4px 6px',
+                borderRadius: 4,
+                border: '1px solid var(--gray-6)',
+                backgroundColor: 'var(--gray-2)',
+                color: 'inherit',
+                fontSize: 12,
+              }}
+            >
+              {FONT_FAMILIES.map(f => <option key={f} value={f}>{f}</option>)}
+            </select>
+          </Flex>
+          <NumberInput
+            label="Font Size"
+            value={properties.fontSize}
+            min={1}
+            max={400}
+            onChange={(v) => onPropertyChange({ fontSize: v })}
+          />
+          <Flex align="center" justify="between" gap="2">
+            <Text size="1" style={{ minWidth: 80 }}>Style</Text>
+            <Flex gap="1">
+              <Button
+                size="1"
+                variant={properties.fontWeight === 'bold' ? 'solid' : 'surface'}
+                color="lime"
+                onClick={() => onPropertyChange({ fontWeight: properties.fontWeight === 'bold' ? 'normal' : 'bold' })}
+                title="Bold"
+              >
+                <FontBoldIcon />
+              </Button>
+              <Button
+                size="1"
+                variant={properties.fontStyle === 'italic' ? 'solid' : 'surface'}
+                color="lime"
+                onClick={() => onPropertyChange({ fontStyle: properties.fontStyle === 'italic' ? 'normal' : 'italic' })}
+                title="Italic"
+              >
+                <FontItalicIcon />
+              </Button>
+            </Flex>
+          </Flex>
         </>
       )}
 

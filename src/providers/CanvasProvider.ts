@@ -27,6 +27,10 @@ export interface IObjectProperties {
   shadow: IShadowConfig;
   brushColor: string;
   brushWidth: number;
+  fontSize: number;
+  fontFamily: string;
+  fontWeight: 'normal' | 'bold';
+  fontStyle: 'normal' | 'italic';
 }
 
 export interface ICanvasLayer {
@@ -65,6 +69,10 @@ const CanvasProvider = createContext<ICanvasProvider>({
     shadow: { color: '#000000', blur: 0, offsetX: 0, offsetY: 0 },
     brushColor: '#84cc16',
     brushWidth: 4,
+    fontSize: 20,
+    fontFamily: 'Arial',
+    fontWeight: 'normal',
+    fontStyle: 'normal',
   },
   setProperties: () => {},
   applyPropertiesToSelection: () => {},

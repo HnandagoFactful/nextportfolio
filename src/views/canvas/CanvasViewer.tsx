@@ -14,7 +14,6 @@ import { canvasViewerLayout } from "./layouts";
 import CanvasStage from "./CanvasStage";
 import CanvasToolbar from "./CanvasToolbar";
 import RightPanel from "./RightPanel";
-import PathDrawerDialog from "./PathDrawerDialog";
 import { useCanvasInit } from "./hooks/useCanvasInit";
 import { useCanvasEvents } from "./hooks/useCanvasEvents";
 import { useVideoLoop } from "./hooks/useVideoLoop";
@@ -33,6 +32,10 @@ const DEFAULT_PROPERTIES: IObjectProperties = {
   shadow: { color: '#000000', blur: 0, offsetX: 0, offsetY: 0 },
   brushColor: '#84cc16',
   brushWidth: 4,
+  fontSize: 20,
+  fontFamily: 'Arial',
+  fontWeight: 'normal',
+  fontStyle: 'normal',
 };
 
 // Assigns a stable unique id to a fabric object
@@ -61,7 +64,11 @@ export default function CanvasViewer() {
   const [videoObjects, setVideoObjects] = useState<Array<{ id: string; videoEl: HTMLVideoElement }>>([]);
   const [textPathId, setTextPathId] = useState<string | null>(null);
   const [textPathOffset, setTextPathOffset] = useState(0);
-  const [pathDrawerOpen, setPathDrawerOpen] = useState(false);
+  const [pathDrawingMode, setPathDrawingMode] = useState(false);
+  // Stable ref: holds the target text layer ID at the moment "Draw Path" is clicked.
+  // Needed because canvas.isDrawingMode=true triggers discardActiveObject() → selection:cleared
+  // → selectedLayerId becomes null before the user has even drawn anything.
+  const pathTargetIdRef = useRef<string | null>(null);
 
   // ---- Canvas init ----
   useCanvasInit(containerRef, canvasElRef, (canvas) => {
@@ -78,11 +85,104 @@ export default function CanvasViewer() {
   // ---- Video loop ----
   useVideoLoop(videoObjects, canvasRef);
 
+  // ---- Path-drawing mode for text-on-path ----
+  // When active, the main canvas becomes a freehand drawing surface.
+  // Uses the same pattern as the official Fabric.js text-on-path demo:
+  //   before:path:created → compute accurate length via util.getPathSegmentsInfo,
+  //                          auto-size font, apply path to selected text object
+  //   path:created        → remove the guide path from canvas
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !canvasReady || !pathDrawingMode) return;
+
+    let cancelled = false;
+    let removeListeners: (() => void) | null = null;
+
+    import('fabric').then(({ PencilBrush, util }) => {
+      if (cancelled) return;
+
+      canvas.isDrawingMode = true;
+      const brush = new PencilBrush(canvas);
+      brush.color = '#84cc16';
+      brush.width = 2;
+      brush.decimate = 8; // smooth out the drawn curve before path:created fires
+      canvas.freeDrawingBrush = brush;
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const onBeforePathCreated = (e: any) => {
+        const drawnPath = e.path;
+
+        // Use Fabric's native path-segment API to compute total arc length.
+        // getPathSegmentsInfo returns cumulative lengths per segment; the last
+        // entry's .length is the full path length — equivalent to SVGPath.getTotalLength()
+        // but computed entirely in Fabric's own math.
+        // Assigning the result to drawnPath.segmentsInfo before passing it to
+        // Text is belt-and-suspenders: Text.set({ path }) auto-calls setPathInfo()
+        // which re-runs this internally, but being explicit makes the intent clear.
+        const pathInfo = util.getPathSegmentsInfo(drawnPath.path);
+        drawnPath.segmentsInfo = pathInfo;
+        const pathLength = pathInfo[pathInfo.length - 1]?.length ?? 300;
+
+        const textObj = canvas.getObjects().find(
+          (o) => (o as FabricObject & { canvasId?: string }).canvasId === pathTargetIdRef.current
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ) as any;
+        if (!textObj) return;
+
+        const charCount = (textObj.text?.length ?? 1) || 1;
+        // Pass drawnPath directly (not a copy). Text.set({ path }) calls setPathInfo()
+        // which populates segmentsInfo on the same object reference.
+        // canvas.remove(drawnPath) in path:created only removes it from the render list;
+        // textObj.path still holds the JS reference, so text keeps flowing on the curve.
+        textObj.set({
+          fontSize: Math.round(2.5 * pathLength / charCount),
+          path: drawnPath,
+          pathStartOffset: 0,
+          left: drawnPath.left,
+          top: drawnPath.top,
+        });
+        textObj.setCoords?.();
+        setTextPathId('__drawn__');
+        setTextPathOffset(0);
+      };
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const onPathCreated = (e: any) => {
+        // Remove drawn path from canvas render list — textObj.path still holds
+        // the JS reference, so text continues to flow along the curve.
+        canvas.remove(e.path);
+        canvas.requestRenderAll();
+        setPathDrawingMode(false);
+        setActiveTool('select'); // re-triggers tool effect to restore select mode
+      };
+
+      canvas.on('before:path:created', onBeforePathCreated);
+      canvas.on('path:created', onPathCreated);
+      removeListeners = () => {
+        canvas.off('before:path:created', onBeforePathCreated);
+        canvas.off('path:created', onPathCreated);
+      };
+    });
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { setPathDrawingMode(false); setActiveTool('select'); }
+    };
+    document.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      cancelled = true;
+      canvas.isDrawingMode = false;
+      document.removeEventListener('keydown', onKeyDown);
+      removeListeners?.();
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathDrawingMode, canvasReady]);
+
   // ---- Tool mode effect ----
   // Depends on canvasReady so it re-runs once the async canvas init completes.
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || pathDrawingMode) return; // path-drawing effect owns the canvas during its mode
 
     // Reset canvas state (listeners cleared by previous cleanup)
     canvas.isDrawingMode = false;
@@ -131,7 +231,10 @@ export default function CanvasViewer() {
           const text = new IText('Type here...', {
             left: scenePoint.x,
             top: scenePoint.y,
-            fontSize: 20,
+            fontSize: properties.fontSize,
+            fontFamily: properties.fontFamily,
+            fontWeight: properties.fontWeight,
+            fontStyle: properties.fontStyle,
             fill: properties.fillColor,
           });
           assignId(text);
@@ -220,7 +323,7 @@ export default function CanvasViewer() {
       cleanupListeners?.();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTool, canvasReady]);
+  }, [activeTool, canvasReady, pathDrawingMode]);
 
   // ---- Brush property sync ----
   useEffect(() => {
@@ -240,6 +343,9 @@ export default function CanvasViewer() {
     if (!obj) { setTextPathId(null); setTextPathOffset(0); return; }
 
     const s = obj.shadow as (Record<string, unknown> | null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const t = obj as any;
+    const isText = obj.type === 'i-text' || obj.type === 'text';
     setPropertiesState((prev) => ({
       ...prev,
       fillColor:   typeof obj.fill   === 'string' ? obj.fill   : prev.fillColor,
@@ -252,6 +358,12 @@ export default function CanvasViewer() {
         offsetX: (s.offsetX as number)  ?? prev.shadow.offsetX,
         offsetY: (s.offsetY as number)  ?? prev.shadow.offsetY,
       } : { color: '#000000', blur: 0, offsetX: 0, offsetY: 0 },
+      ...(isText && {
+        fontSize:   typeof t.fontSize   === 'number' ? t.fontSize               : prev.fontSize,
+        fontFamily: typeof t.fontFamily === 'string' ? t.fontFamily             : prev.fontFamily,
+        fontWeight: t.fontWeight === 'bold'   ? 'bold'   : 'normal' as const,
+        fontStyle:  t.fontStyle  === 'italic' ? 'italic' : 'normal' as const,
+      }),
     }));
 
     // Read text-on-path assignment
@@ -308,37 +420,6 @@ export default function CanvasViewer() {
     canvas.requestRenderAll();
   }, [selectedLayerId]);
 
-  // Apply a hand-drawn path (from PathDrawerDialog) to the selected text object.
-  // The path is kept in memory only — not added to the canvas layers.
-  // Font size is auto-calculated from path length (matches the Fabric.js demo formula).
-  const applyDrawnPath = useCallback(async (pathCommands: unknown[][], pathLength: number) => {
-    const canvas = canvasRef.current;
-    if (!canvas || !selectedLayerId) return;
-    const textObj = canvas.getObjects().find(
-      (o) => (o as FabricObject & { canvasId?: string }).canvasId === selectedLayerId
-    ) as unknown as TextLike & { text?: string; fontSize?: number; set(opts: Record<string, unknown>): void } | undefined;
-    if (!textObj) return;
-
-    const { Path } = await import('fabric');
-    // In-memory guide path — not added to canvas so it won't appear in layers
-    const guidePath = new Path(pathCommands as unknown as string, {
-      fill: '',
-      stroke: 'transparent',
-    });
-
-    textObj.path = guidePath;
-    textObj.pathStartOffset = 0;
-
-    // Auto-size: 2.5 × pathLength ÷ char count (same formula as the official demo)
-    const charCount = (textObj.text?.length ?? 1) || 1;
-    const autoFontSize = Math.round((2.5 * pathLength) / charCount);
-    if (autoFontSize > 0) textObj.set({ fontSize: autoFontSize });
-
-    textObj.setCoords?.();
-    setTextPathId('__drawn__');
-    setTextPathOffset(0);
-    canvas.requestRenderAll();
-  }, [selectedLayerId]);
 
   // ---- Helpers ----
   const setProperties = useCallback((patch: Partial<IObjectProperties>) => {
@@ -376,6 +457,15 @@ export default function CanvasViewer() {
         opacity:     properties.opacity,
         shadow,
       });
+      if (obj.type === 'i-text' || obj.type === 'text') {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (obj as any).set({
+          fontSize:   properties.fontSize,
+          fontFamily: properties.fontFamily,
+          fontWeight: properties.fontWeight,
+          fontStyle:  properties.fontStyle,
+        });
+      }
     });
     canvas.requestRenderAll();
   }, [properties]);
@@ -607,12 +697,6 @@ export default function CanvasViewer() {
 
       <Alert isTimer isWarningIcon />
 
-      <PathDrawerDialog
-        open={pathDrawerOpen}
-        onClose={() => setPathDrawerOpen(false)}
-        onApply={applyDrawnPath}
-      />
-
       <ResponsiveGridLayout
         className="layout"
         isResizable
@@ -628,7 +712,17 @@ export default function CanvasViewer() {
         <Card key="a" variant="surface" style={{ height: '100%', overflow: 'hidden' }}>
           <CanvasToolbar />
         </Card>
-        <Card key="b" variant="surface" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <Card key="b" variant="surface" style={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+          {pathDrawingMode && (
+            <div style={{
+              position: 'absolute', top: 10, left: '50%', transform: 'translateX(-50%)',
+              background: 'var(--lime-9)', color: 'white', padding: '5px 16px',
+              borderRadius: 20, fontSize: 12, zIndex: 10, pointerEvents: 'none',
+              whiteSpace: 'nowrap', boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
+            }}>
+              Draw your path on the canvas · ESC to cancel
+            </div>
+          )}
           <CanvasStage containerRef={containerRef} canvasElRef={canvasElRef} />
         </Card>
         <Card key="c" variant="surface" style={{ height: '100%', overflow: 'hidden' }}>
@@ -648,7 +742,10 @@ export default function CanvasViewer() {
             textPathId={textPathId}
             textPathOffset={textPathOffset}
             onApplyTextOnPath={applyPathToText}
-            onOpenPathDrawer={() => setPathDrawerOpen(true)}
+            onOpenPathDrawer={() => {
+              pathTargetIdRef.current = selectedLayerId;
+              setPathDrawingMode(true);
+            }}
           />
         </Card>
       </ResponsiveGridLayout>
