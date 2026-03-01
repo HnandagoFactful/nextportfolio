@@ -1,28 +1,32 @@
-import { Tabs, Flex, Text } from "@radix-ui/themes";
-import LayersPanel from "./LayersPanel";
-import PropertiesPanel from "./PropertiesPanel";
-import { IRightPanel } from "./types";
+/**
+ * RightPanel
+ *
+ * Tab container that hosts the Layers and Properties panels.
+ *
+ * Previously this component received ~15 props from CanvasViewer and forwarded
+ * them to LayersPanel and PropertiesPanel. Now that both panels consume their
+ * own sub-contexts (LayersContext / PropertiesContext), RightPanel has zero
+ * props and acts purely as a structural shell.
+ *
+ * Tab layout:
+ *  - "Layers"     → LayersPanel (object stack + selection / reorder / rename)
+ *  - "Properties" → PropertiesPanel (fill, stroke, shadow, typography, …)
+ */
 
-export default function RightPanel({
-  layers,
-  selectedLayerId,
-  properties,
-  activeTool,
-  onSelectLayer,
-  onRemoveLayer,
-  onReorderLayer,
-  onCheckLayers,
-  onGroupChecked,
-  onRenameLayer,
-  onPropertyChange,
-  onApply,
-  textPathId,
-  textPathOffset,
-  onApplyTextOnPath,
-  onOpenPathDrawer,
-}: IRightPanel) {
+import { Tabs, Flex, Text } from '@radix-ui/themes';
+import LayersPanel     from './LayersPanel';
+import PropertiesPanel from './PropertiesPanel';
+
+/**
+ * Renders a two-tab interface (Layers / Properties).
+ * No props required — data flows through LayersContext and PropertiesContext.
+ */
+export default function RightPanel() {
   return (
-    <Tabs.Root defaultValue="layers" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Tabs.Root
+      defaultValue="layers"
+      style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+    >
       <Tabs.List>
         <Tabs.Trigger value="layers">
           <Text size="2">Layers</Text>
@@ -32,32 +36,22 @@ export default function RightPanel({
         </Tabs.Trigger>
       </Tabs.List>
 
-      <Flex direction="column" style={{ flex: 1, minHeight: 0, overflow: 'hidden', paddingTop: 8 }}>
-        <Tabs.Content value="layers" style={{ flex: 1, height: '100%', overflow: 'hidden' }}>
-          <LayersPanel
-            layers={layers}
-            selectedLayerId={selectedLayerId}
-            onSelectLayer={onSelectLayer}
-            onRemoveLayer={onRemoveLayer}
-            onReorderLayer={onReorderLayer}
-            onCheckLayers={onCheckLayers}
-            onGroupChecked={onGroupChecked}
-            onRenameLayer={onRenameLayer}
-          />
+      <Flex
+        direction="column"
+        style={{ flex: 1, minHeight: 0, overflow: 'hidden', paddingTop: 8 }}
+      >
+        <Tabs.Content
+          value="layers"
+          style={{ flex: 1, height: '100%', overflow: 'hidden' }}
+        >
+          <LayersPanel />
         </Tabs.Content>
-        <Tabs.Content value="properties" style={{ flex: 1, height: '100%', overflow: 'hidden' }}>
-          <PropertiesPanel
-            properties={properties}
-            activeTool={activeTool}
-            layers={layers}
-            selectedLayerId={selectedLayerId}
-            textPathId={textPathId}
-            textPathOffset={textPathOffset}
-            onPropertyChange={onPropertyChange}
-            onApply={onApply}
-            onApplyTextOnPath={onApplyTextOnPath}
-            onOpenPathDrawer={onOpenPathDrawer}
-          />
+
+        <Tabs.Content
+          value="properties"
+          style={{ flex: 1, height: '100%', overflow: 'hidden' }}
+        >
+          <PropertiesPanel />
         </Tabs.Content>
       </Flex>
     </Tabs.Root>

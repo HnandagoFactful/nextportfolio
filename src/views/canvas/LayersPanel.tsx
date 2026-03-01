@@ -1,56 +1,102 @@
-import { useState, useRef, useEffect } from "react";
-import { Flex, Text, IconButton, Tooltip, Checkbox, Button } from "@radix-ui/themes";
-import { ChevronUpIcon, ChevronDownIcon, TrashIcon, GroupIcon } from "@radix-ui/react-icons";
-import { ILayersPanel } from "./types";
+/**
+ * LayersPanel
+ *
+ * Displays the stack of Fabric canvas objects as a list and provides
+ * controls for selecting, reordering, renaming, removing, and grouping them.
+ *
+ * Data source: LayersContext (no props required).
+ * This removes the CanvasViewer → RightPanel → LayersPanel prop-drilling chain.
+ *
+ * Local state:
+ *  - checkedIds: the set of layer IDs currently checked for multi-select/group
+ *  - editingId / editingLabel: inline rename UI state
+ *
+ * Interaction model:
+ *  - Single click → select layer (sets active Fabric object)
+ *  - Checkbox → add to checked set (creates temporary ActiveSelection)
+ *  - Double-click label → inline rename (committed on blur or Enter)
+ *  - ↑ / ↓ buttons → z-order reorder
+ *  - Trash → remove from canvas
+ *  - "Group N layers" button (shown when ≥ 2 checked) → permanent fabric.Group
+ */
 
-export default function LayersPanel({
-  layers,
-  selectedLayerId,
-  onSelectLayer,
-  onRemoveLayer,
-  onReorderLayer,
-  onCheckLayers,
-  onGroupChecked,
-  onRenameLayer,
-}: ILayersPanel) {
+import { useState, useRef, useEffect } from 'react';
+import { Flex, Text, IconButton, Tooltip, Checkbox, Button } from '@radix-ui/themes';
+import {
+  ChevronUpIcon,
+  ChevronDownIcon,
+  TrashIcon,
+  GroupIcon,
+} from '@radix-ui/react-icons';
+import { useLayersContext } from './LayersContext';
+
+/**
+ * Renders the layers list. Subscribes to LayersContext for all data and ops.
+ */
+export default function LayersPanel() {
+  const {
+    layers,
+    selectedLayerId,
+    selectLayerById,
+    removeLayerById,
+    reorderLayerById,
+    handleCheckLayers,
+    handleGroupChecked,
+    renameLayerById,
+  } = useLayersContext();
+
+  // ── Local UI state ─────────────────────────────────────────────────────────
+
+  /** IDs of layers whose checkboxes are currently ticked. */
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
+
+  /** ID of the layer whose label is being edited inline, or null. */
   const [editingId, setEditingId] = useState<string | null>(null);
+
+  /** Draft text for the inline rename input. */
   const [editingLabel, setEditingLabel] = useState('');
+
+  /** Ref to the rename <input> so we can focus it programmatically. */
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Focus the rename input as soon as it mounts.
   useEffect(() => {
     if (editingId) inputRef.current?.focus();
   }, [editingId]);
 
+  // ── Handlers ───────────────────────────────────────────────────────────────
+
+  /** Toggle a single layer's checked state and notify the context. */
   const handleCheck = (id: string, checked: boolean) => {
     const next = new Set(checkedIds);
-    if (checked) {
-      next.add(id);
-    } else {
-      next.delete(id);
-    }
+    if (checked) { next.add(id); } else { next.delete(id); }
     setCheckedIds(next);
-    onCheckLayers(Array.from(next));
+    handleCheckLayers(Array.from(next));
   };
 
+  /** Group all checked layers and reset the check state. */
   const handleGroup = () => {
-    const ids = Array.from(checkedIds);
-    onGroupChecked(ids);
+    handleGroupChecked(Array.from(checkedIds));
     setCheckedIds(new Set());
-    onCheckLayers([]);
+    handleCheckLayers([]);
   };
 
+  /** Open the inline rename editor for a layer. */
   const startEditing = (id: string, currentLabel: string) => {
     setEditingId(id);
     setEditingLabel(currentLabel);
   };
 
+  /** Commit the in-progress rename and close the editor. */
   const commitEdit = () => {
-    if (editingId) onRenameLayer(editingId, editingLabel);
+    if (editingId) renameLayerById(editingId, editingLabel);
     setEditingId(null);
   };
 
+  /** Cancel the in-progress rename without saving. */
   const cancelEdit = () => setEditingId(null);
+
+  // ── Empty state ────────────────────────────────────────────────────────────
 
   if (layers.length === 0) {
     return (
@@ -60,11 +106,13 @@ export default function LayersPanel({
     );
   }
 
+  // Reverse so the topmost layer (highest z-index) appears at the top of the list.
   const reversed = [...layers].reverse();
 
   return (
     <Flex direction="column" gap="1" style={{ height: '100%', overflow: 'hidden' }}>
 
+      {/* Group button — appears when 2 or more layers are checked */}
       {checkedIds.size >= 2 && (
         <Button
           size="1"
@@ -92,7 +140,7 @@ export default function LayersPanel({
               align="center"
               justify="between"
               gap="1"
-              onClick={() => !isEditing && onSelectLayer(layer.id)}
+              onClick={() => !isEditing && selectLayerById(layer.id)}
               style={{
                 padding: '4px 6px',
                 borderRadius: '6px',
@@ -110,8 +158,12 @@ export default function LayersPanel({
                 userSelect: 'none',
               }}
             >
-              {/* Checkbox — stopPropagation so clicking it doesn't also fire onSelectLayer */}
-              <Flex align="center" onClick={(e) => e.stopPropagation()} style={{ flexShrink: 0 }}>
+              {/* Checkbox — stopPropagation prevents triggering selectLayerById */}
+              <Flex
+                align="center"
+                onClick={(e) => e.stopPropagation()}
+                style={{ flexShrink: 0 }}
+              >
                 <Checkbox
                   size="1"
                   color="lime"
@@ -128,7 +180,7 @@ export default function LayersPanel({
                   onChange={(e) => setEditingLabel(e.target.value)}
                   onBlur={commitEdit}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') { e.preventDefault(); commitEdit(); }
+                    if (e.key === 'Enter')  { e.preventDefault(); commitEdit(); }
                     if (e.key === 'Escape') cancelEdit();
                     e.stopPropagation();
                   }}
@@ -150,29 +202,57 @@ export default function LayersPanel({
                   size="2"
                   color={isSelected ? 'lime' : undefined}
                   weight={isSelected || isChecked ? 'bold' : 'regular'}
-                  onDoubleClick={(e) => { e.stopPropagation(); startEditing(layer.id, layer.label); }}
-                  style={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingLeft: 4 }}
+                  onDoubleClick={(e) => {
+                    e.stopPropagation();
+                    startEditing(layer.id, layer.label);
+                  }}
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    paddingLeft: 4,
+                  }}
                 >
                   {layer.label}
                 </Text>
               )}
 
+              {/* z-order + remove controls — stopPropagation prevents row selection */}
               <Flex gap="1" onClick={(e) => e.stopPropagation()}>
                 <Tooltip content="Move up">
-                  <IconButton size="1" variant="ghost" color="gray" disabled={isTop}
-                    onClick={() => onReorderLayer(layer.id, 'up')} aria-label="Move layer up">
+                  <IconButton
+                    size="1"
+                    variant="ghost"
+                    color="gray"
+                    disabled={isTop}
+                    onClick={() => reorderLayerById(layer.id, 'up')}
+                    aria-label="Move layer up"
+                  >
                     <ChevronUpIcon />
                   </IconButton>
                 </Tooltip>
                 <Tooltip content="Move down">
-                  <IconButton size="1" variant="ghost" color="gray" disabled={isBottom}
-                    onClick={() => onReorderLayer(layer.id, 'down')} aria-label="Move layer down">
+                  <IconButton
+                    size="1"
+                    variant="ghost"
+                    color="gray"
+                    disabled={isBottom}
+                    onClick={() => reorderLayerById(layer.id, 'down')}
+                    aria-label="Move layer down"
+                  >
                     <ChevronDownIcon />
                   </IconButton>
                 </Tooltip>
                 <Tooltip content="Remove">
-                  <IconButton size="1" variant="ghost" color="red"
-                    onClick={() => onRemoveLayer(layer.id)} aria-label="Remove layer">
+                  <IconButton
+                    size="1"
+                    variant="ghost"
+                    color="red"
+                    onClick={() => removeLayerById(layer.id)}
+                    aria-label="Remove layer"
+                  >
                     <TrashIcon />
                   </IconButton>
                 </Tooltip>
