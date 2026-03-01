@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
       {
         source: '/:path*',
         has: [{ type: 'host', value: 'images.factful.dev' }],
-        destination: 'https://factful.dev/en/image-processing',
+        destination: 'https://factful.dev/en/image-process',
         permanent: true,
       },
     ];
