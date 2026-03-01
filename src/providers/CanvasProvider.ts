@@ -7,10 +7,15 @@ export type CanvasTool =
   | 'circle'
   | 'triangle'
   | 'line'
+  | 'arrow'
   | 'text'
   | 'pencil'
   | 'image'
   | 'video';
+
+export type ArrowAnimationType = 'none' | 'dash';
+export type RectBorderStyle   = 'solid' | 'dashed' | 'animated-dashed';
+export type PatternRepeat     = 'repeat' | 'repeat-x' | 'repeat-y' | 'no-repeat';
 
 export interface IShadowConfig {
   color: string;
@@ -31,6 +36,16 @@ export interface IObjectProperties {
   fontFamily: string;
   fontWeight: 'normal' | 'bold';
   fontStyle: 'normal' | 'italic';
+  arrowAnimation: ArrowAnimationType;
+  rectBorderStyle: RectBorderStyle;
+  scaleX: number;
+  scaleY: number;
+  skewX: number;
+  skewY: number;
+  /** True when the selected text object's fill is a Fabric Pattern (not a colour string). */
+  hasFillPattern: boolean;
+  patternRepeat: PatternRepeat;
+  patternScale: number;
 }
 
 export interface ICanvasLayer {
@@ -52,6 +67,14 @@ export interface ICanvasProvider {
   videoObjects: Array<{ id: string; videoEl: HTMLVideoElement }>;
   addVideoObject: (id: string, videoEl: HTMLVideoElement) => void;
   removeVideoObject: (id: string) => void;
+  /** Canvas-level background colour (not an object property). */
+  canvasBackground: string;
+  setCanvasBackground: (color: string) => void;
+  /** Undo / redo. */
+  undo: () => void;
+  redo: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
 }
 
 const CanvasProvider = createContext<ICanvasProvider>({
@@ -73,12 +96,27 @@ const CanvasProvider = createContext<ICanvasProvider>({
     fontFamily: 'Arial',
     fontWeight: 'normal',
     fontStyle: 'normal',
+    arrowAnimation: 'none',
+    rectBorderStyle: 'solid',
+    scaleX: 1,
+    scaleY: 1,
+    skewX: 0,
+    skewY: 0,
+    hasFillPattern: false,
+    patternRepeat: 'repeat',
+    patternScale: 1,
   },
   setProperties: () => {},
   applyPropertiesToSelection: () => {},
   videoObjects: [],
   addVideoObject: () => {},
   removeVideoObject: () => {},
+  canvasBackground: '#ffffff',
+  setCanvasBackground: () => {},
+  undo: () => {},
+  redo: () => {},
+  canUndo: false,
+  canRedo: false,
 });
 
 export default CanvasProvider;

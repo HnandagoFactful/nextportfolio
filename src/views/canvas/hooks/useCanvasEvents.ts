@@ -1,25 +1,7 @@
 import { useEffect, RefObject } from "react";
-import type { Canvas as FabricCanvas, FabricObject } from "fabric";
+import type { Canvas as FabricCanvas } from "fabric";
 import type { ICanvasLayer } from "@/providers/CanvasProvider";
-
-type LabelledObject = FabricObject & { canvasId?: string; canvasLabel?: string };
-
-function buildLabel(obj: LabelledObject, index: number): string {
-  if (obj.canvasLabel) return obj.canvasLabel;
-  const typeMap: Record<string, string> = {
-    rect: 'Rectangle',
-    circle: 'Circle',
-    ellipse: 'Ellipse',
-    triangle: 'Triangle',
-    line: 'Line',
-    'i-text': 'Text',
-    path: 'Path',
-    image: 'Image',
-    group: 'Group',
-  };
-  const name = typeMap[obj.type ?? ''] ?? (obj.type ?? 'Object');
-  return `${name} ${index + 1}`;
-}
+import { buildLayerList, LabelledObject } from "../canvasUtils";
 
 export function useCanvasEvents(
   canvasRef: RefObject<FabricCanvas | null>,
@@ -31,23 +13,13 @@ export function useCanvasEvents(
     if (!canvas) return;
 
     const syncLayers = () => {
-      const objects = canvas.getObjects();
-      setLayers(
-        objects.map((obj, index) => {
-          const lo = obj as LabelledObject;
-          return {
-            id: lo.canvasId ?? String(index),
-            type: obj.type ?? 'object',
-            label: buildLabel(lo, index),
-          };
-        })
-      );
+      setLayers(buildLayerList(canvas.getObjects()));
     };
 
     const onSelectionChange = () => {
       const active = canvas.getActiveObject();
       setSelectedLayerId(
-        active ? ((active as FabricObject & { canvasId?: string }).canvasId ?? null) : null
+        active ? ((active as LabelledObject).canvasId ?? null) : null,
       );
     };
 
