@@ -4,6 +4,24 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin();
 const nextConfig: NextConfig = {
   /* config options here */
+  async redirects() {
+    return [
+      // canvas.factful.dev → factful.dev/en/canvas
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'canvas.factful.dev' }],
+        destination: 'https://factful.dev/en/canvas',
+        permanent: true,
+      },
+      // images.factful.dev → factful.dev/en/image-processing
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'images.factful.dev' }],
+        destination: 'https://factful.dev/en/image-processing',
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
     return [
       {

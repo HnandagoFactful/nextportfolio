@@ -31,7 +31,9 @@ export default function ContainerLayout({ children, pageName }: { children: Reac
             pageName,
             translation: undefined
         }}>
-            <Section className="h-screen w-screen p-0 pt-0! overflow-y-auto overflow-x-hidden">
+            <Section style={{
+                paddingTop: 0
+            }} className="h-screen w-screen p-0 pt-0! overflow-y-auto overflow-x-hidden">
                 <Flex id="nav-bar" direction={'column'}
                     justify={"center"}
                     gap="1"
