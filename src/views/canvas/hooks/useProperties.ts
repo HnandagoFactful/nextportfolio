@@ -138,12 +138,11 @@ export function useProperties(
     if (!active) return;
 
     const { Shadow } = await import('fabric');
-    const shadow = new Shadow({
-      color:   properties.shadow.color,
-      blur:    properties.shadow.blur,
-      offsetX: properties.shadow.offsetX,
-      offsetY: properties.shadow.offsetY,
-    });
+    const { shadow: sc } = properties;
+    // A shadow with no blur and no offset is invisible; set null to fully remove it.
+    const shadow = (sc.blur > 0 || sc.offsetX !== 0 || sc.offsetY !== 0)
+      ? new Shadow({ color: sc.color, blur: sc.blur, offsetX: sc.offsetX, offsetY: sc.offsetY })
+      : null;
 
     // For an ActiveSelection (multi-checkbox), apply to each child individually.
     const targets: FabricObject[] =

@@ -11,9 +11,13 @@ import {
   ImageIcon,
   VideoIcon,
   DownloadIcon,
+  ChevronDownIcon,
 } from "@radix-ui/react-icons";
 import CanvasProvider, { CanvasTool } from "@/providers/CanvasProvider";
 import { useCanvasExport } from "./hooks/useCanvasExport";
+import { TEMPLATES, type ITemplate } from "./templates";
+import FlowchartSymbolsBar from "./FlowchartSymbolsBar";
+import { assignId } from "./canvasUtils";
 
 const ArrowToolIcon = () => (
   <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -36,6 +40,24 @@ const RedoIcon = () => (
   </svg>
 );
 
+// ── Page sizes (mm → px at 96 dpi, 1 mm = 3.7795 px) ────────────────────────
+const MM = 3.7795;
+const PAGE_SIZES = [
+  { label: 'A2', w: Math.round(420 * MM), h: Math.round(594 * MM) },
+  { label: 'A3', w: Math.round(297 * MM), h: Math.round(420 * MM) },
+  { label: 'A4', w: Math.round(210 * MM), h: Math.round(297 * MM) },
+  { label: 'A5', w: Math.round(148 * MM), h: Math.round(210 * MM) },
+];
+
+const PageIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+    <rect x="3" y="1" width="9" height="13" rx="1" stroke="currentColor" strokeWidth="1.3"/>
+    <line x1="5" y1="5" x2="10" y2="5" stroke="currentColor" strokeWidth="1"/>
+    <line x1="5" y1="7.5" x2="10" y2="7.5" stroke="currentColor" strokeWidth="1"/>
+    <line x1="5" y1="10" x2="8"  y2="10" stroke="currentColor" strokeWidth="1"/>
+  </svg>
+);
+
 const TOOLS: Array<{ tool: CanvasTool; icon: React.ReactNode; label: string }> = [
   { tool: 'select',   icon: <CursorArrowIcon />,       label: 'Select' },
   { tool: 'rect',     icon: <SquareIcon />,             label: 'Rectangle' },
@@ -50,9 +72,12 @@ const TOOLS: Array<{ tool: CanvasTool; icon: React.ReactNode; label: string }> =
 ];
 
 export default function CanvasToolbar() {
-  const { activeTool, setActiveTool, undo, redo, canUndo, canRedo, canvasRef } = use(CanvasProvider);
+  const { activeTool, setActiveTool, undo, redo, canUndo, canRedo, canvasRef, setCanvasBackground } = use(CanvasProvider);
   const { downloadAsPng, downloadAsJpeg, downloadAsPdf } = useCanvasExport(canvasRef);
   const [isRow, setIsRow] = useState(false);
+  const [templatesOpen, setTemplatesOpen] = useState(false);
+  const [activeTemplate, setActiveTemplate] = useState<string | null>(null);
+  const [pageSizeOpen, setPageSizeOpen] = useState(false);
 
   useEffect(() => {
     const check = () => setIsRow(window.innerWidth < 1005);
@@ -60,6 +85,35 @@ export default function CanvasToolbar() {
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
+
+  const addPage = async (wPx: number, hPx: number) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    setPageSizeOpen(false);
+    const { Rect, Shadow } = await import('fabric');
+    const vpt = canvas.viewportTransform as number[];
+    const zoom = canvas.getZoom();
+    const cx = (canvas.getWidth()  / 2 - vpt[4]) / zoom;
+    const cy = (canvas.getHeight() / 2 - vpt[5]) / zoom;
+    const rect = new Rect({
+      left: cx, top: cy, originX: 'center', originY: 'center',
+      width: wPx, height: hPx,
+      fill: '#ffffff', stroke: '#cbd5e1', strokeWidth: 1,
+      shadow: new Shadow({ color: 'rgba(0,0,0,0.18)', blur: 12, offsetX: 3, offsetY: 3 }),
+    });
+    assignId(rect);
+    canvas.add(rect);
+    canvas.setActiveObject(rect);
+    canvas.requestRenderAll();
+  };
+
+  const applyTemplate = async (t: ITemplate) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    setTemplatesOpen(false);
+    await t.apply(canvas, setCanvasBackground);
+    setActiveTemplate(t.id);
+  };
 
   return (
     <Flex
@@ -136,6 +190,81 @@ export default function CanvasToolbar() {
             <Button size="1" variant="soft" color="lime" onClick={downloadAsPng}>PNG</Button>
             <Button size="1" variant="soft" color="lime" onClick={downloadAsJpeg}>JPEG</Button>
             <Button size="1" variant="soft" color="lime" onClick={downloadAsPdf}>PDF</Button>
+          </Flex>
+        </Popover.Content>
+      </Popover.Root>
+
+      {/* Page size */}
+      <Popover.Root open={pageSizeOpen} onOpenChange={setPageSizeOpen}>
+        <Tooltip content="Add page" side={isRow ? 'bottom' : 'right'}>
+          <Popover.Trigger>
+            <IconButton variant="soft" color="gray" size="1" aria-label="Add page">
+              <PageIcon />
+            </IconButton>
+          </Popover.Trigger>
+        </Tooltip>
+        <Popover.Content side={isRow ? 'bottom' : 'right'} align="center" sideOffset={6} style={{ padding: 8, minWidth: 160 }}>
+          <Flex direction="column" gap="1">
+            <Text size="1" color="gray" weight="medium" style={{ paddingBottom: 2 }}>Add page frame</Text>
+            {PAGE_SIZES.map(({ label, w, h }) => (
+              <Flex key={label} gap="1">
+                <Button size="1" variant="soft" color="lime" style={{ flex: 1 }} onClick={() => addPage(w, h)}>
+                  {label} Portrait
+                </Button>
+                <Button size="1" variant="soft" color="gray" style={{ flex: 1 }} onClick={() => addPage(h, w)}>
+                  {label} Land.
+                </Button>
+              </Flex>
+            ))}
+          </Flex>
+        </Popover.Content>
+      </Popover.Root>
+
+      {/* Flowchart symbols — only visible when the flowchart template is active */}
+      {activeTemplate === 'flowchart' && (
+        <>
+          <Separator orientation="vertical" size="1" style={{ height: 20 }} />
+          <FlowchartSymbolsBar />
+        </>
+      )}
+
+      {/* Spacer — pushes Templates to the right end */}
+      <div style={{ flex: 1, minWidth: 0 }} />
+
+      <Separator orientation="vertical" size="1" style={{ height: 20, flexShrink: 0 }} />
+
+      {/* Templates */}
+      <Popover.Root open={templatesOpen} onOpenChange={setTemplatesOpen}>
+        <Popover.Trigger>
+          <Button size="1" variant="soft" color="lime" style={{ flexShrink: 0, gap: 4 }}>
+            Templates <ChevronDownIcon />
+          </Button>
+        </Popover.Trigger>
+        <Popover.Content side="bottom" align="end" sideOffset={6} style={{ padding: 8, minWidth: 220 }}>
+          <Flex direction="column" gap="1">
+            <Text size="1" color="gray" weight="medium" style={{ paddingBottom: 4 }}>Choose a template</Text>
+            {TEMPLATES.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => applyTemplate(t)}
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  padding: '8px 10px',
+                  border: '1px solid var(--gray-4)',
+                  borderRadius: 6,
+                  background: 'var(--gray-2)',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  color: 'inherit',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--lime-3)')}
+                onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--gray-2)')}
+              >
+                <div style={{ fontWeight: 600, fontSize: 13 }}>{t.label}</div>
+                <div style={{ fontSize: 11, color: 'var(--gray-11)', marginTop: 2 }}>{t.description}</div>
+              </button>
+            ))}
           </Flex>
         </Popover.Content>
       </Popover.Root>

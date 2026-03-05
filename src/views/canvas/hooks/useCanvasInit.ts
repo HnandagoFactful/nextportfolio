@@ -32,7 +32,12 @@ export function useCanvasInit(
       ro = new ResizeObserver(([entry]) => {
         if (!fabricCanvas) return;
         const { width, height } = entry.contentRect;
-        fabricCanvas.setDimensions({ width, height });
+        // Never shrink below the current canvas size — the canvas may have
+        // been expanded by useCanvasExpand when objects were dragged near
+        // the boundary. Allow it to grow when the container grows.
+        const newW = Math.max(width,  fabricCanvas.getWidth());
+        const newH = Math.max(height, fabricCanvas.getHeight());
+        fabricCanvas.setDimensions({ width: newW, height: newH });
         fabricCanvas.requestRenderAll();
       });
       ro.observe(container);

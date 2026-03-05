@@ -45,7 +45,10 @@ import { useTextOnPath }        from './hooks/useTextOnPath';
 import { useToolMode }          from './hooks/useToolMode';
 import { useArrowConnections }  from './hooks/useArrowConnections';
 import { useCanvasAnimations }  from './hooks/useCanvasAnimations';
+import { useCanvasExpand }      from './hooks/useCanvasExpand';
 import { useUndoRedo }          from './hooks/useUndoRedo';
+import { useShapeTextEdit }     from './hooks/useShapeTextEdit';
+import { useCanvasRuler, RULER_SIZE } from './hooks/useCanvasRuler';
 import { usePatternFill }       from './hooks/usePatternFill';
 import { useInstantApply }      from './hooks/useInstantApply';
 import { assignId }             from './canvasUtils';
@@ -65,12 +68,53 @@ export default function CanvasViewer() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasElRef  = useRef<HTMLCanvasElement | null>(null);
 
+  // ── Ruler canvas refs ─────────────────────────────────────────────────────
+  const hRulerRef = useRef<HTMLCanvasElement | null>(null);
+  const vRulerRef = useRef<HTMLCanvasElement | null>(null);
+
   // ── Core state ────────────────────────────────────────────────────────────
   const [canvasReady,      setCanvasReady]      = useState(false);
   const [layers,           setLayers]           = useState<ICanvasLayer[]>([]);
   const [selectedLayerId,  setSelectedLayerId]  = useState<string | null>(null);
   const [activeTool,       setActiveTool]       = useState<CanvasTool>('select');
   const [canvasBackground, setCanvasBackground] = useState<string>(DEFAULT_BG);
+
+  // ── Dynamic row height ────────────────────────────────────────────────────
+  // On md+ breakpoints (≥ 980 px wide) we compute rowHeight so the grid fits
+  // exactly within the viewport, preventing page scroll.
+  //
+  // The toolbar is rendered *outside* the grid (fixed minHeight: 52px) so it
+  // no longer occupies a grid row. The grid now has 18 rows (canvas + panel).
+  //
+  // Formula:
+  //   available   = innerHeight − navbar(60) − pagePad(16)
+  //   gridPx      = available − toolbarH(52) − toolbarMb(8)
+  //   rowHeight   = floor((gridPx − (rows + 1) * marginY) / rows)
+  //              = floor((innerHeight − 288) / 18)
+  const [rowHeight, setRowHeight] = useState(50);
+
+  useEffect(() => {
+    const NAVBAR_H   = 60;
+    const PAGE_PAD   = 16; // ContainerLayout !pt-4
+    const TOOLBAR_H  = 52; // toolbar card min-height (rendered outside grid)
+    const TOOLBAR_MB = 8;  // margin-bottom below toolbar card
+    const GRID_ROWS  = 18; // canvas row (h:18) — toolbar no longer in grid
+    const MARGIN_Y   = 8;  // margin[1] in ResponsiveGridLayout
+
+    const compute = () => {
+      // Only constrain on md+ (≥ 980 px width); let narrower screens scroll.
+      if (window.innerWidth < 980) { setRowHeight(50); return; }
+      const available = window.innerHeight - NAVBAR_H - PAGE_PAD;
+      const computed  = Math.floor(
+        (available - TOOLBAR_H - TOOLBAR_MB - (GRID_ROWS + 1) * MARGIN_Y) / GRID_ROWS
+      );
+      setRowHeight(Math.max(computed, 24));
+    };
+
+    compute();
+    window.addEventListener('resize', compute);
+    return () => window.removeEventListener('resize', compute);
+  }, []);
 
   // ── Stable refs for hook callbacks ────────────────────────────────────────
   // usePatternFill and useInstantApply use these refs inside useCallback so
@@ -147,9 +191,16 @@ export default function CanvasViewer() {
     properties, imageInputRef, videoInputRef, setActiveTool,
   });
 
-  // ── Arrow connections + canvas animations ─────────────────────────────────
+  // ── Arrow connections, canvas animations, canvas expansion ────────────────
   useArrowConnections(canvasRef, canvasReady);
   useCanvasAnimations(canvasRef, canvasReady);
+  useCanvasExpand(canvasRef, canvasReady);
+
+  // ── Shape text editing (double-click any shape to add/edit a label) ───────
+  useShapeTextEdit(canvasRef, canvasReady, activeTool);
+
+  // ── Rulers ────────────────────────────────────────────────────────────────
+  useCanvasRuler(canvasRef, canvasReady, hRulerRef, vRulerRef);
 
   // ── Undo / redo ───────────────────────────────────────────────────────────
   const { undo, redo, canUndo, canRedo, saveSnapshot } = useUndoRedo(
@@ -284,11 +335,16 @@ export default function CanvasViewer() {
 
           <Alert isTimer isWarningIcon />
 
+          {/* Toolbar — outside the grid so it always gets its own ≥52px height */}
+          <Card variant="surface" style={{ width: '98%', minHeight: 52, overflow: 'hidden', marginBottom: 8 }}>
+            <CanvasToolbar />
+          </Card>
+
           <ResponsiveGridLayout
             className="layout"
             isResizable
             resizeHandles={['e', 's', 'se']}
-            rowHeight={50}
+            rowHeight={rowHeight}
             style={{ width: '98%' }}
             useCSSTransforms
             margin={[12, 8]}
@@ -296,11 +352,6 @@ export default function CanvasViewer() {
             breakpoints={{ lg: 1200, md: 980, sm: 768, xs: 480, xxs: 0 }}
             cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
           >
-            {/* Toolbar */}
-            <Card key="a" variant="surface" style={{ height: '100%', overflow: 'hidden' }}>
-              <CanvasToolbar />
-            </Card>
-
             {/* Canvas stage */}
             <Card
               key="b"
@@ -317,7 +368,7 @@ export default function CanvasViewer() {
                 <div
                   style={{
                     position: 'absolute',
-                    top: 10,
+                    top: RULER_SIZE + 10,
                     left: '50%',
                     transform: 'translateX(-50%)',
                     background: 'var(--lime-9)',
@@ -334,7 +385,32 @@ export default function CanvasViewer() {
                   Draw your path on the canvas · ESC to cancel
                 </div>
               )}
-              <CanvasStage containerRef={containerRef} canvasElRef={canvasElRef} />
+
+              {/* Ruler row (top) */}
+              <div style={{ display: 'flex', flexShrink: 0, height: RULER_SIZE }}>
+                {/* Corner square */}
+                <div style={{
+                  width: RULER_SIZE, height: RULER_SIZE, flexShrink: 0,
+                  background: '#0f172a',
+                  borderRight: '1px solid #334155',
+                  borderBottom: '1px solid #334155',
+                }} />
+                {/* Horizontal ruler */}
+                <canvas
+                  ref={hRulerRef}
+                  style={{ flex: 1, height: RULER_SIZE, display: 'block', minWidth: 0 }}
+                />
+              </div>
+
+              {/* Canvas row (V ruler + stage) */}
+              <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
+                {/* Vertical ruler */}
+                <canvas
+                  ref={vRulerRef}
+                  style={{ width: RULER_SIZE, flexShrink: 0, display: 'block' }}
+                />
+                <CanvasStage containerRef={containerRef} canvasElRef={canvasElRef} />
+              </div>
             </Card>
 
             {/* Right panel — no props; reads from LayersContext + PropertiesContext */}
