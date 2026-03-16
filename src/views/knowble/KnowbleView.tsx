@@ -315,26 +315,26 @@ function PostQuestionDialog({ open, onClose, isMobile, isTablet }: PostQuestionD
   const [reRecordIdx, setReRecordIdx] = useState<number | null>(null);
 
   // ── image state ──
-  const [images, setImages] = useState<{ id: string; file: File; url: string }[]>([]);
-  const imageInputRef = useRef<HTMLInputElement | null>(null);
+  // const [_images, setImages] = useState<{ id: string; file: File; url: string }[]>([]);
+  // const _imageInputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleImageFiles = (files: FileList | null) => {
-    if (!files) return;
-    const added = Array.from(files).map((file) => ({
-      id: `img-${Date.now()}-${Math.random()}`,
-      file,
-      url: URL.createObjectURL(file),
-    }));
-    setImages((prev) => [...prev, ...added]);
-  };
+  // const handleImageFiles = (files: FileList | null) => {
+  //   if (!files) return;
+  //   const added = Array.from(files).map((file) => ({
+  //     id: `img-${Date.now()}-${Math.random()}`,
+  //     file,
+  //     url: URL.createObjectURL(file),
+  //   }));
+  //   setImages((prev) => [...prev, ...added]);
+  // };
 
-  const removeImage = (id: string) => {
-    setImages((prev) => {
-      const img = prev.find((i) => i.id === id);
-      if (img) URL.revokeObjectURL(img.url);
-      return prev.filter((i) => i.id !== id);
-    });
-  };
+  // const removeImage = (id: string) => {
+  //   setImages((prev) => {
+  //     const img = prev.find((i) => i.id === id);
+  //     if (img) URL.revokeObjectURL(img.url);
+  //     return prev.filter((i) => i.id !== id);
+  //   });
+  // };
 
   const mediaRecorderRef  = useRef<MediaRecorder | null>(null);
   const streamRef         = useRef<MediaStream | null>(null);

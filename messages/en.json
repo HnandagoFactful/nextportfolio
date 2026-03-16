@@ -26,7 +26,7 @@
                     "name": "Knowble",
                     "alias": "knowble",
                     "path": "/en/knowble",
-                    "isVisible": true
+                    "isVisible": false
                 }
             ]
         },
@@ -58,7 +58,7 @@
                     "name": "Knowble",
                     "alias": "knowble",
                     "path": "/en/knowble",
-                    "isVisible": true
+                    "isVisible": false
                 }
             ]
         },
@@ -102,7 +102,7 @@
                     "name": "Knowble",
                     "alias": "knowble",
                     "path": "/en/knowble",
-                    "isVisible": true
+                    "isVisible": false
                 }
             ]
         },
@@ -142,7 +142,7 @@
                     "name": "Knowble",
                     "alias": "knowble",
                     "path": "/en/knowble",
-                    "isVisible": true
+                    "isVisible": false
                 }
             ]
         },
@@ -198,7 +198,7 @@
                     "name": "Knowble",
                     "alias": "knowble",
                     "path": "/en/knowble",
-                    "isVisible": true
+                    "isVisible": false
                 }
             ]
         },

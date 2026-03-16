@@ -5,6 +5,7 @@ import { getMessages } from 'next-intl/server';
 
 import AppThemeProvider from "@/components/theme/AppThemeProvider";
 import QueryProvider from "@/providers/QueryProvider";
+import FirebaseAnalytics from "@/components/analytics/FirebaseAnalytics";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -39,6 +40,7 @@ export default async function RootLayout({
         <NextIntlClientProvider messages={messages}>
           <QueryProvider>
             <AppThemeProvider>
+              <FirebaseAnalytics />
               {children}
             </AppThemeProvider>
           </QueryProvider>

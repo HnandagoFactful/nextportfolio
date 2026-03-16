@@ -8,6 +8,7 @@
     "dev": "next dev --turbopack",
     "build": "npm run build:workers && next build",
     "start": "next start",
+    "deploy": "npm run build && firebase deploy --only hosting",
     "lint": "next lint --fix"
   },
   "dependencies": {
