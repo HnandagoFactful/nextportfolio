@@ -29,12 +29,15 @@ export function useCanvasInit(
 
       onReady(fabricCanvas);
 
-      ro = new ResizeObserver(([entry]) => {
+      ro = new ResizeObserver(() => {
         if (!fabricCanvas) return;
-        const { width, height } = entry.contentRect;
-        // Never shrink below the current canvas size — the canvas may have
-        // been expanded by useCanvasExpand when objects were dragged near
-        // the boundary. Allow it to grow when the container grows.
+        // Page mode: canvas is locked to the page size — never resize it.
+        if ((fabricCanvas as unknown as Record<string, unknown>).__pageSize) return;
+        const container = containerRef.current;
+        if (!container) return;
+        const { clientWidth: width, clientHeight: height } = container;
+        // Free-canvas mode: never shrink below the current size (useCanvasExpand
+        // may have grown it when objects were dragged near the boundary).
         const newW = Math.max(width,  fabricCanvas.getWidth());
         const newH = Math.max(height, fabricCanvas.getHeight());
         fabricCanvas.setDimensions({ width: newW, height: newH });

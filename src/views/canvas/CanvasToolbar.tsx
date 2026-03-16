@@ -72,7 +72,7 @@ const TOOLS: Array<{ tool: CanvasTool; icon: React.ReactNode; label: string }> =
 ];
 
 export default function CanvasToolbar() {
-  const { activeTool, setActiveTool, undo, redo, canUndo, canRedo, canvasRef, setCanvasBackground } = use(CanvasProvider);
+  const { activeTool, setActiveTool, undo, redo, canUndo, canRedo, canvasRef, setCanvasBackground, setProperties } = use(CanvasProvider);
   const { downloadAsPng, downloadAsJpeg, downloadAsPdf } = useCanvasExport(canvasRef);
   const [isRow, setIsRow] = useState(false);
   const [templatesOpen, setTemplatesOpen] = useState(false);
@@ -91,12 +91,15 @@ export default function CanvasToolbar() {
     if (!canvas) return;
     setPageSizeOpen(false);
     const { Rect, Shadow } = await import('fabric');
-    const vpt = canvas.viewportTransform as number[];
-    const zoom = canvas.getZoom();
-    const cx = (canvas.getWidth()  / 2 - vpt[4]) / zoom;
-    const cy = (canvas.getHeight() / 2 - vpt[5]) / zoom;
+
+    // Lock canvas to exactly the page dimensions — no zoom/pan.
+    // The container has overflow:auto so large pages scroll naturally.
+    (canvas as unknown as Record<string, unknown>).__pageSize = { w: wPx, h: hPx };
+    canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+    canvas.setDimensions({ width: wPx, height: hPx });
+
     const rect = new Rect({
-      left: cx, top: cy, originX: 'center', originY: 'center',
+      left: 0, top: 0,
       width: wPx, height: hPx,
       fill: '#ffffff', stroke: '#cbd5e1', strokeWidth: 1,
       shadow: new Shadow({ color: 'rgba(0,0,0,0.18)', blur: 12, offsetX: 3, offsetY: 3 }),
@@ -104,6 +107,10 @@ export default function CanvasToolbar() {
     assignId(rect);
     canvas.add(rect);
     canvas.setActiveObject(rect);
+
+    // Default drawing colours to black — shapes/text are visible on the white page
+    setProperties({ fillColor: '#000000', strokeColor: '#000000', brushColor: '#000000' });
+
     canvas.requestRenderAll();
   };
 

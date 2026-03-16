@@ -87,6 +87,11 @@ export function useArrowConnections(
           fab.height = temp.height;
           fab.left   = temp.left;
           fab.top    = temp.top;
+          // Mark dirty so Fabric invalidates the cached bitmap and redraws the
+          // actual path shape — without this, Fabric just repositions the old
+          // cached bitmap and the arrow length/direction never changes.
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (fab as any).dirty = true;
           fab.setCoords();
         }
 

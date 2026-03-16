@@ -26,7 +26,7 @@ export default function ImageUploader() {
                         const fileExists = uploaderContext.data?.find((item) => item?.name === file.name)
                         if (!fileExists) {
                             uploaderContext.setData(file)
-                            
+                            uploaderContext.setSelectedFileData(file)
                         } else {
                             console.log("else")
                             pageContext.setAlertContentType(translations("imageExists"), 'warning')

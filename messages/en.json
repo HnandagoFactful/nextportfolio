@@ -1,5 +1,5 @@
 {
-    
+
     "home": {
         "global": {
             "project": "Portfolio",
@@ -21,6 +21,12 @@
                     "alias": "jsontosql",
                     "path": "/en/json-to-sql",
                     "isVisible": false
+                },
+                {
+                    "name": "Knowble",
+                    "alias": "knowble",
+                    "path": "/en/knowble",
+                    "isVisible": true
                 }
             ]
         },
@@ -47,6 +53,12 @@
                     "alias": "jsontosql",
                     "path": "/en/json-to-sql",
                     "isVisible": false
+                },
+                {
+                    "name": "Knowble",
+                    "alias": "knowble",
+                    "path": "/en/knowble",
+                    "isVisible": true
                 }
             ]
         },
@@ -85,6 +97,12 @@
                     "alias": "jsontosql",
                     "path": "/en/json-to-sql",
                     "isVisible": false
+                },
+                {
+                    "name": "Knowble",
+                    "alias": "knowble",
+                    "path": "/en/knowble",
+                    "isVisible": true
                 }
             ]
         },
@@ -119,6 +137,12 @@
                     "alias": "canvas",
                     "path": "/en/canvas",
                     "isVisible": true
+                },
+                {
+                    "name": "Knowble",
+                    "alias": "knowble",
+                    "path": "/en/knowble",
+                    "isVisible": true
                 }
             ]
         },
@@ -152,6 +176,82 @@
             "brushColor": "Brush Color",
             "brushWidth": "Brush Thickness",
             "apply": "Apply"
+        }
+    },
+    "knowble": {
+        "global": {
+            "project": "Knowble",
+            "navigation": [
+                {
+                    "name": "Images",
+                    "alias": "imageprocessor",
+                    "path": "/en/image-process",
+                    "isVisible": true
+                },
+                {
+                    "name": "Canvas",
+                    "alias": "canvas",
+                    "path": "/en/canvas",
+                    "isVisible": true
+                },
+                {
+                    "name": "Knowble",
+                    "alias": "knowble",
+                    "path": "/en/knowble",
+                    "isVisible": true
+                }
+            ]
+        },
+        "project": "Knowble",
+        "brand": "Knowble",
+        "login": "Login",
+        "recordMoment": "Record a moment",
+        "postThought": "Post a thought",
+        "search": {
+            "placeholder": "Search questions…",
+            "filters": "Filters"
+        },
+        "filter": {
+            "title": "Filter Questions",
+            "category": "Category",
+            "tags": "Tags",
+            "clearAll": "Clear all filters"
+        },
+        "card": {
+            "viewDetail": "View Detail",
+            "audio": "{count} audio",
+            "images": "{count, plural, one {# image} other {# images}}"
+        },
+        "dialog": {
+            "title": "Record a moment",
+            "titleLabel": "Title",
+            "titlePlaceholder": "e.g. How does X work in Y?",
+            "titleCounter": "{count}/400",
+            "categoryLabel": "Category",
+            "categoryPlaceholder": "Type to search categories…",
+            "categoryChangePlaceholder": "Change category…",
+            "tagsLabel": "Tags",
+            "tagsPlaceholder": "Type to add tags…",
+            "voiceRecordings": "Voice Recordings",
+            "segment": "Seg {index}",
+            "recording": "Recording",
+            "reRecording": "Re-rec Seg {index}",
+            "timer": "{elapsed} / 0:30",
+            "stopRecording": "Stop recording",
+            "recordVoice": "Record voice note",
+            "stopReRecording": "Stop re-recording",
+            "reRecordSegment": "Re-record this segment",
+            "cancel": "Cancel",
+            "submit": "Submit question"
+        },
+        "feed": {
+            "loading": "Loading…",
+            "loadingMore": "Loading more…",
+            "error": "Failed to load questions. Check your connection and try again.",
+            "retry": "Retry",
+            "empty": "No questions found",
+            "clearFilters": "Clear filters",
+            "endOfList": "You've reached the end"
         }
     }
 }

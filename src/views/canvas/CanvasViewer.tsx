@@ -132,7 +132,14 @@ export default function CanvasViewer() {
     canvasRef.current = canvas;
     // Set background before canvasReady so the first undo snapshot is correct.
     canvas.backgroundColor = DEFAULT_BG;
-    canvas.on('object:added', ({ target }) => { if (target) assignId(target); });
+    // Only assign IDs to persistent canvas objects — skip transient display-only
+    // objects (arrow preview paths, snap indicator circles) which have
+    // selectable:false. Giving them IDs would make them snap targets in
+    // findNearestConnection, causing the snap indicator to appear on the
+    // preview arrow instead of the intended shape.
+    canvas.on('object:added', ({ target }) => {
+      if (target && target.selectable !== false) assignId(target);
+    });
     setCanvasReady(true);
   });
   useCanvasEvents(canvasRef, setLayers, setSelectedLayerId);

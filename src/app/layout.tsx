@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 
 import AppThemeProvider from "@/components/theme/AppThemeProvider";
+import QueryProvider from "@/providers/QueryProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -36,9 +37,11 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <NextIntlClientProvider messages={messages}>
-          <AppThemeProvider>
-            {children}
-          </AppThemeProvider>
+          <QueryProvider>
+            <AppThemeProvider>
+              {children}
+            </AppThemeProvider>
+          </QueryProvider>
         </NextIntlClientProvider>
       </body>
     </html>

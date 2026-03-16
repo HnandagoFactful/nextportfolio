@@ -158,6 +158,7 @@ export default function CropperControls({
             previewCanvasRef={previewCanvasRef}
             setShowPreview={setShowPreview}
             showPreview={showPreview}
+            isCropDisabled={isCropDisabled}
             onDownload={onDownload}/>
         </Flex>
       </Flex>

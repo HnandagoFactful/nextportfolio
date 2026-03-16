@@ -69,6 +69,9 @@ function makeCircle(
 
 function drop(canvas: FabricCanvas, obj: FabricObject) {
   canvas.add(obj);
+  // Ensure oCoords are computed immediately so getBoundingRect() returns correct
+  // values on the very first snap attempt (before the first renderAll cycle).
+  obj.setCoords();
   canvas.setActiveObject(obj);
   canvas.requestRenderAll();
 }

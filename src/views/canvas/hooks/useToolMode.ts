@@ -110,6 +110,8 @@ export function useToolMode({
       // ── Arrow tool ──────────────────────────────────────────────────────────
       if (activeTool === 'arrow') {
         canvas.defaultCursor = 'crosshair';
+        // Prevent Fabric from targeting/dragging existing objects while drawing arrows
+        canvas.skipTargetFind = true;
 
         let arrowOriginX = 0;
         let arrowOriginY = 0;
@@ -150,7 +152,7 @@ export function useToolMode({
             arrowPreview = new Path(buildArrowPath(arrowOriginX, arrowOriginY, ex, ey), {
               fill: properties.strokeColor,
               stroke: properties.strokeColor,
-              strokeWidth: properties.strokeWidth,
+              strokeWidth: 1,
               selectable: false, evented: false,
             });
             canvas.add(arrowPreview);
@@ -171,7 +173,7 @@ export function useToolMode({
           const finalPath = new Path(buildArrowPath(arrowOriginX, arrowOriginY, x2, y2), {
             fill: properties.strokeColor,
             stroke: properties.strokeColor,
-            strokeWidth: properties.strokeWidth,
+            strokeWidth: 1,
           });
           assignId(finalPath);
           const arrow = finalPath as unknown as ArrowObject;
@@ -193,6 +195,7 @@ export function useToolMode({
 
         cleanupListeners = () => {
           clearSnap();
+          canvas.skipTargetFind = false;
           canvas.off('mouse:down', onArrowDown);
           canvas.off('mouse:move', onArrowMove);
           canvas.off('mouse:up', onArrowUp);
@@ -269,6 +272,7 @@ export function useToolMode({
       canvas.isDrawingMode = false;
       canvas.selection = false;
       canvas.defaultCursor = 'default';
+      canvas.skipTargetFind = false;
       cleanupListeners?.();
     };
     // properties values are captured via closure — intentionally excluded from deps.

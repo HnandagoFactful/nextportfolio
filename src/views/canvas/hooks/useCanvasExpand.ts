@@ -26,6 +26,8 @@ export function useCanvasExpand(
     if (!canvas || !canvasReady) return;
 
     const expand = () => {
+      // Page mode: canvas size is fixed to the page — don't auto-expand.
+      if ((canvas as unknown as Record<string, unknown>).__pageSize) return;
       const obj = canvas.getActiveObject();
       if (!obj) return;
 

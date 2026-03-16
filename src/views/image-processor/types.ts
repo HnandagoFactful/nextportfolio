@@ -7,6 +7,7 @@ export interface ICroppedImagePreviewButton {
     previewCanvasRef: RefObject<HTMLCanvasElement | null>
     setShowPreview: (event: boolean) => void;
     onDownload: (canvas: HTMLCanvasElement, isSaveToList?: boolean) => Promise<void>;
+    isCropDisabled: boolean;
 }
 
 export interface ICropperControls {

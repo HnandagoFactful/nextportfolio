@@ -10,7 +10,8 @@ export default function CroppedImagePreviewButton({
     showPreview,
     previewCanvasRef,
     setShowPreview,
-    onDownload
+    onDownload,
+    isCropDisabled,
 }: ICroppedImagePreviewButton) {
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -53,8 +54,8 @@ export default function CroppedImagePreviewButton({
               <Dialog.Root onOpenChange={(event: boolean) => {
                 setShowPreview(event);
               }}>
-                <Dialog.Trigger>
-                  <Button color="blue" size="2" className="text-sm" onClick={() => {
+                <Dialog.Trigger disabled={isCropDisabled}>
+                  <Button color="blue" size="2" className="text-sm" disabled={isCropDisabled} onClick={() => {
                   setShowPreview(true);
                 }}>Preview & Download</Button>
                 </Dialog.Trigger>

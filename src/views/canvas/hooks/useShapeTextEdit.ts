@@ -232,7 +232,12 @@ export function useShapeTextEdit(
         cv.remove(lbl);
 
         const group = new Group([shape, lbl]);
-        assignId(group);
+        // Inherit the shape's canvasId so that any arrows connected to the
+        // shape continue to resolve (via findById) to this group after grouping.
+        // canvas.getObjects() only returns top-level objects, so the group is
+        // what findById finds — and its bounding rect is the right anchor point.
+        const inheritedId = (shape as WithMeta).canvasId;
+        (group as WithMeta).canvasId = inheritedId ?? crypto.randomUUID();
         (group as WithMeta).canvasShapeTextGroup = true;
 
         cv.add(group);

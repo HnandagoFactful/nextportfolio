@@ -81,7 +81,14 @@ export function getRectConnectionPoint(
   }
 }
 
-/** Finds the nearest rectangle connection point within snapDist pixels. Returns null if none. */
+/** Finds the nearest shape connection point within snapDist pixels. Returns null if none.
+ *
+ *  Priority order:
+ *   1. If the pointer is inside a shape's bounding box → snap to that shape's nearest edge midpoint.
+ *   2. Otherwise → snap to any edge midpoint within snapDist pixels.
+ *
+ *  Works for any Fabric object type (rect, path, circle, group, …).
+ */
 export function findNearestConnection(
   canvas: { getObjects(): FabricObject[] },
   x: number,
@@ -89,21 +96,42 @@ export function findNearestConnection(
   snapDist = 20,
 ): { objId: string; side: ConnectionSide; x: number; y: number } | null {
   const sides: ConnectionSide[] = ['top', 'right', 'bottom', 'left'];
-  let nearest: { objId: string; side: ConnectionSide; x: number; y: number } | null = null;
-  let nearestDist = snapDist;
+
+  // Pass 1 — pointer is inside a shape's bounding box (highest priority)
+  let insideNearest: { objId: string; side: ConnectionSide; x: number; y: number } | null = null;
+  let insideDist = Infinity;
+
+  // Pass 2 — pointer is near an edge midpoint (fallback)
+  let edgeNearest: { objId: string; side: ConnectionSide; x: number; y: number } | null = null;
+  let edgeDist = snapDist;
+
   for (const obj of canvas.getObjects()) {
     const lo = obj as LabelledObject;
-    if (!lo.canvasId || obj.type !== 'rect') continue;
+    // Skip objects without an id (snap indicators, previews) and arrow objects themselves
+    if (!lo.canvasId || (obj as ArrowObject).canvasArrowType === 'arrow') continue;
+
+    const br = obj.getBoundingRect();
+    const inside =
+      x >= br.left && x <= br.left + br.width &&
+      y >= br.top  && y <= br.top  + br.height;
+
     for (const side of sides) {
       const pt = getRectConnectionPoint(obj, side);
       const d = Math.hypot(pt.x - x, pt.y - y);
-      if (d < nearestDist) {
-        nearestDist = d;
-        nearest = { objId: lo.canvasId, side, x: pt.x, y: pt.y };
+
+      if (inside) {
+        if (d < insideDist) {
+          insideDist = d;
+          insideNearest = { objId: lo.canvasId, side, x: pt.x, y: pt.y };
+        }
+      } else if (d < edgeDist) {
+        edgeDist = d;
+        edgeNearest = { objId: lo.canvasId, side, x: pt.x, y: pt.y };
       }
     }
   }
-  return nearest;
+
+  return insideNearest ?? edgeNearest;
 }
 
 /**
