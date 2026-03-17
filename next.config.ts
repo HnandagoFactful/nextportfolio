@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
   output: 'export',
   // Each page becomes out/en/page/index.html — Firebase cleanUrls handles the rest.
   trailingSlash: true,
+  // Image optimization requires a Node.js server — disabled for static export.
+  images: { unoptimized: true },
   experimental: {
     optimizePackageImports: ["@chakra-ui/react"],
   },
