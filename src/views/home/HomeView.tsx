@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import React from "react";
-import { Section } from "@radix-ui/themes";
+import { Flex, Link, Section, Text } from "@radix-ui/themes";
 const HomeHeader = dynamic(() => import('./HomeHeader'),
 { ssr: false })
 const Education = dynamic(() => import('./education/Education'),
@@ -16,6 +16,9 @@ export default function HomeView() {
       <HomeHeader />
       <Experience />
       <Education />
+      <Flex justify="center" py="6">
+        <Link href="/en/privacy" size="2" color="gray">Privacy Policy</Link>
+      </Flex>
     </Section>
   );
 }
