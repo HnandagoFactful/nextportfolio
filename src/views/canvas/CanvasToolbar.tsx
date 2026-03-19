@@ -11,13 +11,11 @@ import {
   ImageIcon,
   VideoIcon,
   DownloadIcon,
-  ChevronDownIcon,
 } from "@radix-ui/react-icons";
 import CanvasProvider, { CanvasTool } from "@/providers/CanvasProvider";
 import { useCanvasExport } from "./hooks/useCanvasExport";
-import { TEMPLATES, type ITemplate } from "./templates";
-import FlowchartSymbolsBar from "./FlowchartSymbolsBar";
 import { assignId } from "./canvasUtils";
+import ShapesBar from "./ShapesBar";
 
 const ArrowToolIcon = () => (
   <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -72,11 +70,9 @@ const TOOLS: Array<{ tool: CanvasTool; icon: React.ReactNode; label: string }> =
 ];
 
 export default function CanvasToolbar() {
-  const { activeTool, setActiveTool, undo, redo, canUndo, canRedo, canvasRef, setCanvasBackground, setProperties } = use(CanvasProvider);
+  const { activeTool, setActiveTool, undo, redo, canUndo, canRedo, canvasRef, setProperties } = use(CanvasProvider);
   const { downloadAsPng, downloadAsJpeg, downloadAsPdf } = useCanvasExport(canvasRef);
   const [isRow, setIsRow] = useState(false);
-  const [templatesOpen, setTemplatesOpen] = useState(false);
-  const [activeTemplate, setActiveTemplate] = useState<string | null>(null);
   const [pageSizeOpen, setPageSizeOpen] = useState(false);
 
   useEffect(() => {
@@ -112,14 +108,6 @@ export default function CanvasToolbar() {
     setProperties({ fillColor: '#000000', strokeColor: '#000000', brushColor: '#000000' });
 
     canvas.requestRenderAll();
-  };
-
-  const applyTemplate = async (t: ITemplate) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    setTemplatesOpen(false);
-    await t.apply(canvas, setCanvasBackground);
-    setActiveTemplate(t.id);
   };
 
   return (
@@ -227,54 +215,11 @@ export default function CanvasToolbar() {
         </Popover.Content>
       </Popover.Root>
 
-      {/* Flowchart symbols — only visible when the flowchart template is active */}
-      {activeTemplate === 'flowchart' && (
-        <>
-          <Separator orientation="vertical" size="1" style={{ height: 20 }} />
-          <FlowchartSymbolsBar />
-        </>
-      )}
+      <Separator orientation="vertical" size="1" style={{ height: 20 }} />
 
-      {/* Spacer — pushes Templates to the right end */}
-      <div style={{ flex: 1, minWidth: 0 }} />
+      {/* Extra shapes */}
+      <ShapesBar />
 
-      <Separator orientation="vertical" size="1" style={{ height: 20, flexShrink: 0 }} />
-
-      {/* Templates */}
-      <Popover.Root open={templatesOpen} onOpenChange={setTemplatesOpen}>
-        <Popover.Trigger>
-          <Button size="1" variant="soft" color="lime" style={{ flexShrink: 0, gap: 4 }}>
-            Templates <ChevronDownIcon />
-          </Button>
-        </Popover.Trigger>
-        <Popover.Content side="bottom" align="end" sideOffset={6} style={{ padding: 8, minWidth: 220 }}>
-          <Flex direction="column" gap="1">
-            <Text size="1" color="gray" weight="medium" style={{ paddingBottom: 4 }}>Choose a template</Text>
-            {TEMPLATES.map((t) => (
-              <button
-                key={t.id}
-                onClick={() => applyTemplate(t)}
-                style={{
-                  display: 'block',
-                  width: '100%',
-                  padding: '8px 10px',
-                  border: '1px solid var(--gray-4)',
-                  borderRadius: 6,
-                  background: 'var(--gray-2)',
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  color: 'inherit',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--lime-3)')}
-                onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--gray-2)')}
-              >
-                <div style={{ fontWeight: 600, fontSize: 13 }}>{t.label}</div>
-                <div style={{ fontSize: 11, color: 'var(--gray-11)', marginTop: 2 }}>{t.description}</div>
-              </button>
-            ))}
-          </Flex>
-        </Popover.Content>
-      </Popover.Root>
     </Flex>
   );
 }
