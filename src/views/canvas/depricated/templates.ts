@@ -18,7 +18,7 @@ import type { Canvas as FabricCanvas, FabricObject } from 'fabric';
 import {
   assignId, buildArrowPath,
   type ArrowObject, type LabelledObject, type ConnectionSide,
-} from './canvasUtils';
+} from '../canvasUtils';
 
 const DEFAULT_BG = '#2e342d';
 

@@ -8,7 +8,7 @@
 type AnyClass = new (...args: any[]) => any;
 
 import type { Canvas as FabricCanvas, FabricObject } from 'fabric';
-import { assignId } from './canvasUtils';
+import { assignId } from '../canvasUtils';
 
 function getViewportCenter(canvas: FabricCanvas) {
   const vpt = canvas.viewportTransform as number[];
