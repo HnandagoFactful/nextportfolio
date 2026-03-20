@@ -11,6 +11,7 @@ interface UseToolModeParams {
   canvasReady: boolean;
   activeTool: CanvasTool;
   pathDrawingMode: boolean;
+  polygonDrawingMode: boolean;
   properties: IObjectProperties;
   imageInputRef: RefObject<HTMLInputElement | null>;
   videoInputRef: RefObject<HTMLInputElement | null>;
@@ -32,6 +33,7 @@ export function useToolMode({
   canvasReady,
   activeTool,
   pathDrawingMode,
+  polygonDrawingMode,
   properties,
   imageInputRef,
   videoInputRef,
@@ -40,8 +42,8 @@ export function useToolMode({
   // ---- Tool mode effect ----
   useEffect(() => {
     const canvas = canvasRef.current;
-    // path-drawing effect owns the canvas during its mode — don't interfere
-    if (!canvas || pathDrawingMode) return;
+    // path-drawing and polygon-drawing effects own the canvas during their modes — don't interfere
+    if (!canvas || pathDrawingMode || polygonDrawingMode) return;
 
     canvas.isDrawingMode = false;
     canvas.selection = false;
@@ -278,7 +280,7 @@ export function useToolMode({
     // properties values are captured via closure — intentionally excluded from deps.
     // Adding properties here would re-register listeners on every color slider change.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTool, canvasReady, pathDrawingMode]);
+  }, [activeTool, canvasReady, pathDrawingMode, polygonDrawingMode]);
 
   // ---- Brush property sync ----
   // Live-updates the pencil brush while it is active without re-triggering the full tool effect.

@@ -24,7 +24,7 @@
  */
 
 import { use, useRef, useState, useEffect, useMemo } from 'react';
-import { Card } from '@radix-ui/themes';
+import { Card, Button } from '@radix-ui/themes';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import Alert from '@/components/globals/Alert';
 import CanvasProvider, { CanvasTool, ICanvasLayer } from '@/providers/CanvasProvider';
@@ -42,6 +42,7 @@ import { useMediaUpload }       from './hooks/useMediaUpload';
 import { useLayers }            from './hooks/useLayers';
 import { useProperties, DEFAULT_PROPERTIES } from './hooks/useProperties';
 import { useTextOnPath }        from './hooks/useTextOnPath';
+import { usePolygonTool }       from './hooks/usePolygonTool';
 import { useToolMode }          from './hooks/useToolMode';
 import { useArrowConnections }  from './hooks/useArrowConnections';
 import { useCanvasAnimations }  from './hooks/useCanvasAnimations';
@@ -192,9 +193,14 @@ export default function CanvasViewer() {
     setTextPathOffset,
   });
 
+  // ── Polygon tool ──────────────────────────────────────────────────────────
+  const { polygonDrawingMode, polygonPointCount, lockPolygon } = usePolygonTool({
+    canvasRef, canvasReady, activeTool, properties, setActiveTool,
+  });
+
   // ── Tool mode (must follow useTextOnPath so pathDrawingMode is available) ──
   useToolMode({
-    canvasRef, canvasReady, activeTool, pathDrawingMode,
+    canvasRef, canvasReady, activeTool, pathDrawingMode, polygonDrawingMode,
     properties, imageInputRef, videoInputRef, setActiveTool,
   });
 
@@ -390,6 +396,40 @@ export default function CanvasViewer() {
                   }}
                 >
                   Draw your path on the canvas · ESC to cancel
+                </div>
+              )}
+
+              {/* Polygon drawing mode overlay */}
+              {polygonDrawingMode && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: RULER_SIZE + 10,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    background: 'var(--color-panel-solid)',
+                    border: '1px solid var(--lime-7)',
+                    padding: '5px 12px',
+                    borderRadius: 20,
+                    fontSize: 12,
+                    zIndex: 10,
+                    whiteSpace: 'nowrap',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
+                  }}
+                >
+                  <span style={{ color: 'var(--lime-11)' }}>
+                    Click to add points ({polygonPointCount})
+                    {polygonPointCount >= 3 ? ' · click first point to close' : ''}
+                    {' · ESC to cancel'}
+                  </span>
+                  {polygonPointCount >= 2 && (
+                    <Button size="1" color="lime" variant="solid" onClick={lockPolygon}>
+                      Lock
+                    </Button>
+                  )}
                 </div>
               )}
 
