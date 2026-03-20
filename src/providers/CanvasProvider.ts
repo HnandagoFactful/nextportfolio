@@ -11,7 +11,8 @@ export type CanvasTool =
   | 'text'
   | 'pencil'
   | 'image'
-  | 'video';
+  | 'video'
+  | 'polygon';
 
 export type ArrowAnimationType = 'none' | 'dash';
 export type RectBorderStyle   = 'solid' | 'dashed' | 'animated-dashed';

@@ -1,8 +1,9 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, ReactNode, useState } from "react";
+import Image from "next/image";
 import clsx from "clsx";
-import { Flex, Heading, Section } from "@radix-ui/themes";
+import { Flex, Section, Heading } from "@radix-ui/themes";
 
 import Navigation from './Navigation';
 import { useTranslations } from 'next-intl';
@@ -25,7 +26,7 @@ export default function ContainerLayout({ children, pageName }: { children: Reac
             }
         }
     }, [])
-    
+
     return (
         <TranslationProvider.Provider value={{
             pageName,
@@ -49,9 +50,19 @@ export default function ContainerLayout({ children, pageName }: { children: Reac
                         style={{
                             borderColor: "var(--lime-9)",
                         }}>
-                        <Heading color="lime" className='pl-4 text-xl sm:text-lg'>
-                            {t('global.project')}
-                        </Heading>
+
+                        <Flex direction={"row"} align={"center"}>
+                            <Image
+                                src="/icon.png"
+                                alt={t('global.project')}
+                                height={26}
+                                width={90}
+                                className="object-contain"
+                            />
+                            <Heading color="lime" className='pl-4 text-2xl sm:text-2xl'>
+                                {t('global.project')}
+                            </Heading>
+                        </Flex>
                         <Flex direction={"row"} gap="2" align={"center"}>
                             <Navigation />
                         </Flex>

@@ -17,6 +17,17 @@ import { useCanvasExport } from "./hooks/useCanvasExport";
 import { assignId } from "./canvasUtils";
 import ShapesBar from "./ShapesBar";
 
+const PolygonToolIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="7.5,1.5 13.5,5.5 11.5,12.5 3.5,12.5 1.5,5.5" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinejoin="round"/>
+    <circle cx="7.5" cy="1.5" r="1.2" fill="currentColor"/>
+    <circle cx="13.5" cy="5.5" r="1.2" fill="currentColor"/>
+    <circle cx="11.5" cy="12.5" r="1.2" fill="currentColor"/>
+    <circle cx="3.5" cy="12.5" r="1.2" fill="currentColor"/>
+    <circle cx="1.5" cy="5.5" r="1.2" fill="currentColor"/>
+  </svg>
+);
+
 const ArrowToolIcon = () => (
   <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
     <line x1="2" y1="13" x2="11" y2="4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -63,6 +74,7 @@ const TOOLS: Array<{ tool: CanvasTool; icon: React.ReactNode; label: string }> =
   { tool: 'triangle', icon: <TriangleUpIcon />,         label: 'Triangle' },
   { tool: 'line',     icon: <DividerHorizontalIcon />,  label: 'Line' },
   { tool: 'arrow',    icon: <ArrowToolIcon />,          label: 'Arrow' },
+  { tool: 'polygon',  icon: <PolygonToolIcon />,        label: 'Polygon' },
   { tool: 'text',     icon: <TextIcon />,               label: 'Text' },
   { tool: 'pencil',   icon: <Pencil1Icon />,            label: 'Pencil' },
   { tool: 'image',    icon: <ImageIcon />,              label: 'Add Image' },
