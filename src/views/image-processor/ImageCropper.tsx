@@ -4,7 +4,7 @@ import ReactCrop, {
     Crop,
     PixelCrop
 } from "react-image-crop";
-import { Box } from "@radix-ui/themes";
+import { Box, Flex, Text } from "@radix-ui/themes";
 import ImageProcessorProvider from "@/providers/ImageProcessorProvider";
 import CropperControls from "./CropperControls";
 import { centerAspectCrop, downloadImageFromPreview } from "./utils";
@@ -197,7 +197,13 @@ export default function ImageCropper() {
 
 
     if (!fileData) {
-      return null;
+      return (
+        <Flex align="center" justify="center" style={{ flex: 1, minHeight: 0 }}>
+          <Text size="2" color="gray" align="center">
+            No images uploaded yet.<br />Upload an image to get started.
+          </Text>
+        </Flex>
+      );
     }
 
     return (

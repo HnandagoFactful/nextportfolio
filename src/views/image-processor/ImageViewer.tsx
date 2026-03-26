@@ -1,38 +1,29 @@
 import { use, useState } from "react";
 import { Card } from "@radix-ui/themes";
-import { Responsive, WidthProvider } from "react-grid-layout";
 import Alert from "@/components/globals/Alert";
 import ImageProcessorProvider from "@/providers/ImageProcessorProvider";
-import { initial2ColImgVIewerLayout } from "./layouts";
 import ImageUploader from "./ImageUploader";
 import ImagesList from "./ImagesList";
 import ImageCropper from "./ImageCropper";
-
-import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
-import GenericNotification from "@/components/globals/GenericNotification";
+import ConversionControls from "./ConversionControls";
 import { TranslationProvider } from "@/providers/TranslationProvider";
 import { useTranslations } from "next-intl";
-import ConversionControls from "./ConversionControls";
-
-
-const ResponsiveGridLayout = WidthProvider(Responsive);
 
 export default function ImageViewer() {
-    const translationProvider = use(TranslationProvider) 
+    const translationProvider = use(TranslationProvider)
     const translations = useTranslations(translationProvider.pageName)
+
     const [fileData, setFileData] = useState<File[] | undefined>(undefined);
     const [selectedFileData, setSelectedFileData] = useState<File | undefined>(undefined);
 
     const setData = (file: File) => {
-        setFileData(fileData ? [...fileData, file] : [file] )
+        setFileData(prev => prev ? [...prev, file] : [file])
     }
 
     const removeData = (fileId: string) => {
-       setFileData(fileData?.filter((item: File) => item.name !== fileId))
-        if (selectedFileData &&
-            fileId.trim() === selectedFileData.name.trim()) {
-            setSelectedFileData(() => undefined)
+        setFileData(prev => prev?.filter((item: File) => item.name !== fileId))
+        if (selectedFileData && fileId.trim() === selectedFileData.name.trim()) {
+            setSelectedFileData(undefined)
         }
     }
 
@@ -45,30 +36,45 @@ export default function ImageViewer() {
             setSelectedFileData
         }}>
             <Alert isTimer isWarningIcon />
-            <GenericNotification message={translations('cardDragNotification')} />
-            <ResponsiveGridLayout
-                className="layout"
-                isResizable
-                resizeHandles={["e", "s", "se"]}
-                rowHeight={50}
-                style={{ width: "98%"}}
-                useCSSTransforms={true}
-                margin={[12, 8]}
-                layouts={initial2ColImgVIewerLayout}
-                breakpoints={{ lg: 1200, md: 980, sm: 768, xs: 480, xxs: 0 }}
-                cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}>
-                <Card key="a" variant="surface">
+
+            {/*
+              Layout:
+                Mobile  → 1 column, stacked: Upload / Cropper / Convert
+                Desktop → 2 columns: left sidebar (Upload on top, Convert fills rest)
+                                     right main   (Cropper spans full height)
+            */}
+            <div className="img-viewer-grid grid grid-cols-1 md:grid-cols-[280px_1fr] gap-3 p-2">
+
+                {/* A — Upload (top-left) */}
+                <Card variant="surface" className="overflow-auto">
                     <ImageUploader />
                     <ImagesList />
                 </Card>
-                {/* height:100% fills the react-grid-layout cell; flex-col lets ImageCropper expand */}
-                <Card key="b" variant="surface" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+
+                {/* B — Cropper  mobile: order-2  desktop: col-2 rows-1→3 */}
+                <Card
+                    variant="surface"
+                    className="flex flex-col overflow-hidden min-h-[420px] md:row-start-1 md:row-end-3 md:col-start-2"
+                >
                     <ImageCropper />
                 </Card>
-                <Card key="c">
+
+                {/* C — Conversion (bottom-left, fills remaining height on desktop) */}
+                <Card variant="surface" className="overflow-auto md:row-start-2 md:col-start-1">
                     <ConversionControls />
                 </Card>
-            </ResponsiveGridLayout>
+            </div>
+
+            {/* grid-template-rows can't be set via Tailwind arbitraries for responsive,
+                so a minimal scoped rule handles desktop row sizing. */}
+            <style>{`
+                @media (min-width: 768px) {
+                    .img-viewer-grid {
+                        height: calc(100svh - 68px);
+                        grid-template-rows: auto 1fr;
+                    }
+                }
+            `}</style>
         </ImageProcessorProvider.Provider>
     )
 }

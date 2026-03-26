@@ -98,11 +98,12 @@ export default function CroppedImagePreviewButton({
                     <canvas
                       ref={previewCanvasRef}
                       style={{
-                        margin: "0 auto",
+                        display: 'block',
+                        margin: '0 auto',
                         border: '1px solid black',
+                        maxWidth: '100%',
+                        maxHeight: '60vh',
                         objectFit: 'contain',
-                        width: completedCrop.width,
-                        height: completedCrop.height,
                       }}
                     />
                   ): (<Text>Please select a segment of the image to preview</Text>)}

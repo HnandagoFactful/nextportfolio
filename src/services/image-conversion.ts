@@ -12,10 +12,9 @@ export default async function imageConversion({
     flip: '1' | '0';
     resize: [number, number]
 }) {
-    const form = new FormData()
-    form.append('file', data)
     const baseUrl = process.env.NEXT_PUBLIC_IMAGE_PROCESSOR_URL ?? 'http://localhost:3002'
-    const response = await axios.post(`${baseUrl}/api/images?resize=${resize}&format=${format}&flip=${flip}`, form, {
+    const response = await axios.post(`${baseUrl}/convert?resize=${resize}&format=${format}&flip=${flip}`, data, {
+        headers: { 'Content-Type': data.type },
         responseType: 'blob'
     })
     const variant = mimeTypes.lookup(format);

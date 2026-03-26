@@ -46,11 +46,13 @@ export default function CropperControls({
             completedCrop,
             scale,
             rotate,
+            translateX ?? 0,
+            translateY ?? 0,
           )
         }
       },
       100,
-      [completedCrop, scale, rotate,  showPreview],
+      [completedCrop, scale, rotate, translateX, translateY, showPreview],
   )
   return (
       <Flex direction="column" gap="2">
