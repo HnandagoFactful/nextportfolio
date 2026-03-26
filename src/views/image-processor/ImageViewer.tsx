@@ -1,4 +1,4 @@
-import { use, useState } from "react";
+import { useState } from "react";
 import { Card } from "@radix-ui/themes";
 import Alert from "@/components/globals/Alert";
 import ImageProcessorProvider from "@/providers/ImageProcessorProvider";
@@ -6,12 +6,8 @@ import ImageUploader from "./ImageUploader";
 import ImagesList from "./ImagesList";
 import ImageCropper from "./ImageCropper";
 import ConversionControls from "./ConversionControls";
-import { TranslationProvider } from "@/providers/TranslationProvider";
-import { useTranslations } from "next-intl";
 
 export default function ImageViewer() {
-    const translationProvider = use(TranslationProvider)
-    const translations = useTranslations(translationProvider.pageName)
 
     const [fileData, setFileData] = useState<File[] | undefined>(undefined);
     const [selectedFileData, setSelectedFileData] = useState<File | undefined>(undefined);
