@@ -2,31 +2,75 @@
 
     "home": {
         "global": {
+            "project": "Factful",
+            "navigation": [
+                {
+                    "name": "Home",
+                    "alias": "home",
+                    "path": "/en/home",
+                    "isVisible": true
+                },
+                {
+                    "name": "About",
+                    "alias": "about",
+                    "path": "/en/about",
+                    "isVisible": true
+                },
+                {
+                    "name": "Images",
+                    "alias": "imageprocessor",
+                    "path": "/en/image-process",
+                    "isVisible": true
+                },
+                {
+                    "name": "Canvas",
+                    "alias": "canvas",
+                    "path": "/en/canvas",
+                    "isVisible": true
+                },
+                {
+                    "name": "Privacy",
+                    "alias": "privacy",
+                    "path": "/en/privacy",
+                    "isVisible": true
+                }
+            ]
+        },
+        "project": "Portfolio"
+    },
+    "about": {
+        "global": {
             "project": "Portfolio",
             "navigation": [
                 {
                     "name": "Home",
                     "alias": "home",
-                    "path": "/en",
+                    "path": "/en/home",
                     "isVisible": true
                 },
                 {
-                    "name": "Detail",
-                    "alias": "detail",
-                    "path": "/en/detail",
-                    "isVisible": false
+                    "name": "About",
+                    "alias": "about",
+                    "path": "/en/about",
+                    "isVisible": true
                 },
                 {
-                    "name": "JSON2SQL",
-                    "alias": "jsontosql",
-                    "path": "/en/json-to-sql",
-                    "isVisible": false
+                    "name": "Images",
+                    "alias": "imageprocessor",
+                    "path": "/en/image-process",
+                    "isVisible": true
                 },
                 {
-                    "name": "Knowble",
-                    "alias": "knowble",
-                    "path": "/en/knowble",
-                    "isVisible": false
+                    "name": "Canvas",
+                    "alias": "canvas",
+                    "path": "/en/canvas",
+                    "isVisible": true
+                },
+                {
+                    "name": "Privacy",
+                    "alias": "privacy",
+                    "path": "/en/privacy",
+                    "isVisible": true
                 }
             ]
         },
@@ -71,8 +115,8 @@
                 {
                     "name": "Home",
                     "alias": "home",
-                    "path": "/en",
-                    "isVisible": false
+                    "path": "/en/home",
+                    "isVisible": true
                 },
                 {
                     "name": "Images",
@@ -87,22 +131,10 @@
                     "isVisible": true
                 },
                 {
-                    "name": "Detail",
-                    "alias": "detail",
-                    "path": "/en/detail",
-                    "isVisible": false
-                },
-                {
-                    "name": "JSON2SQL",
-                    "alias": "jsontosql",
-                    "path": "/en/json-to-sql",
-                    "isVisible": false
-                },
-                {
-                    "name": "Knowble",
-                    "alias": "knowble",
-                    "path": "/en/knowble",
-                    "isVisible": false
+                    "name": "Privacy",
+                    "alias": "privacy",
+                    "path": "/en/privacy",
+                    "isVisible": true
                 }
             ]
         },
@@ -127,6 +159,12 @@
             "project": "Canvas",
             "navigation": [
                 {
+                    "name": "Home",
+                    "alias": "home",
+                    "path": "/en/home",
+                    "isVisible": true
+                },
+                {
                     "name": "Images",
                     "alias": "imageprocessor",
                     "path": "/en/image-process",
@@ -139,10 +177,10 @@
                     "isVisible": true
                 },
                 {
-                    "name": "Knowble",
-                    "alias": "knowble",
-                    "path": "/en/knowble",
-                    "isVisible": false
+                    "name": "Privacy",
+                    "alias": "privacy",
+                    "path": "/en/privacy",
+                    "isVisible": true
                 }
             ]
         },
@@ -183,6 +221,12 @@
             "project": "Knowble",
             "navigation": [
                 {
+                    "name": "Home",
+                    "alias": "home",
+                    "path": "/en/home",
+                    "isVisible": true
+                },
+                {
                     "name": "Images",
                     "alias": "imageprocessor",
                     "path": "/en/image-process",
@@ -195,10 +239,10 @@
                     "isVisible": true
                 },
                 {
-                    "name": "Knowble",
-                    "alias": "knowble",
-                    "path": "/en/knowble",
-                    "isVisible": false
+                    "name": "Privacy",
+                    "alias": "privacy",
+                    "path": "/en/privacy",
+                    "isVisible": true
                 }
             ]
         },
@@ -261,7 +305,19 @@
                 {
                     "name": "Home",
                     "alias": "home",
-                    "path": "/en",
+                    "path": "/en/home",
+                    "isVisible": true
+                },
+                {
+                    "name": "About",
+                    "alias": "about",
+                    "path": "/en/about",
+                    "isVisible": true
+                },
+                {
+                    "name": "Images",
+                    "alias": "imageprocessor",
+                    "path": "/en/image-process",
                     "isVisible": true
                 },
                 {
@@ -271,9 +327,9 @@
                     "isVisible": true
                 },
                 {
-                    "name": "Images",
-                    "alias": "imageprocessor",
-                    "path": "/en/image-process",
+                    "name": "Privacy",
+                    "alias": "privacy",
+                    "path": "/en/privacy",
                     "isVisible": true
                 }
             ]

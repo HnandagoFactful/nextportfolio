@@ -19,8 +19,39 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: 'Factful: Harikrishna',
-    description: 'Personal website for Harikrishna',
+    metadataBase: new URL('https://factful.dev'),
+    title: {
+        default: 'Factful',
+        template: '%s | Factful',
+    },
+    description: 'No-ads browser and mobile tools by Harikrishna Nandagopal — Image Manipulator, Canvas Editor, and Directflow offline reader.',
+    keywords: ['factful', 'image editor', 'canvas editor', 'epub reader', 'pdf reader', 'drawing tool', 'Harikrishna Nandagopal', 'offline tools'],
+    authors: [{ name: 'Harikrishna Nandagopal', url: 'https://www.linkedin.com/in/harikrishna-n-79349121/' }],
+    creator: 'Harikrishna Nandagopal',
+    openGraph: {
+        type: 'website',
+        locale: 'en_US',
+        url: 'https://factful.dev',
+        siteName: 'Factful',
+        title: 'Factful',
+        description: 'No-ads browser and mobile tools — Image Manipulator, Canvas Editor, and Directflow offline EPub/PDF reader.',
+        images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Factful' }],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Factful',
+        description: 'No-ads browser and mobile tools — no installation required.',
+        images: ['/og-image.png'],
+    },
+    robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            'max-image-preview': 'large',
+        },
+    },
 }
 
 export default async function RootLayout({

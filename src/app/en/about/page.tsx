@@ -1,12 +1,10 @@
 'use client';
-import dynamic from 'next/dynamic';
 import useAlerts from '@/hooks/useAlerts';
 import pageProvider from '@/providers/PageProvider';
 import ContainerLayout from '@/components/globals/ContainerLayout';
+import HomeView from '@/views/home/HomeView';
 
-const LandingView = dynamic(() => import('@/views/home/LandingView'), { ssr: false });
-
-export default function HomePage() {
+export default function AboutPage() {
     const {
         alert,
         resetAlert,
@@ -14,13 +12,13 @@ export default function HomePage() {
     } = useAlerts()
     return (
         <pageProvider.Provider value={{
-            pageName: 'home',
+            pageName: 'about',
             ...alert,
             resetAlert,
             setAlertContentType
         }}>
-            <ContainerLayout pageName="home">
-                <LandingView />
+            <ContainerLayout pageName="about">
+                <HomeView />
             </ContainerLayout>
         </pageProvider.Provider>
     )
