@@ -1,445 +1,510 @@
 {
-
-    "home": {
-        "global": {
-            "project": "Factful",
-            "navigation": [
-                {
-                    "name": "Home",
-                    "alias": "home",
-                    "path": "/en/home",
-                    "isVisible": true
-                },
-                {
-                    "name": "About",
-                    "alias": "about",
-                    "path": "/en/about",
-                    "isVisible": true
-                },
-                {
-                    "name": "Images",
-                    "alias": "imageprocessor",
-                    "path": "/en/image-process",
-                    "isVisible": true
-                },
-                {
-                    "name": "Canvas",
-                    "alias": "canvas",
-                    "path": "/en/canvas",
-                    "isVisible": true
-                },
-                {
-                    "name": "Diagrams",
-                    "alias": "diagrams",
-                    "path": "/en/diagrams",
-                    "isVisible": true
-                },
-                {
-                    "name": "Privacy",
-                    "alias": "privacy",
-                    "path": "/en/privacy",
-                    "isVisible": true
-                }
-            ]
+  "home": {
+    "global": {
+      "project": "Factful",
+      "navigation": [
+        {
+          "name": "Home",
+          "alias": "home",
+          "path": "/en/home",
+          "isVisible": true
         },
-        "project": "Portfolio"
-    },
-    "about": {
-        "global": {
-            "project": "Portfolio",
-            "navigation": [
-                {
-                    "name": "Home",
-                    "alias": "home",
-                    "path": "/en/home",
-                    "isVisible": true
-                },
-                {
-                    "name": "About",
-                    "alias": "about",
-                    "path": "/en/about",
-                    "isVisible": true
-                },
-                {
-                    "name": "Images",
-                    "alias": "imageprocessor",
-                    "path": "/en/image-process",
-                    "isVisible": true
-                },
-                {
-                    "name": "Canvas",
-                    "alias": "canvas",
-                    "path": "/en/canvas",
-                    "isVisible": true
-                },
-                {
-                    "name": "Diagrams",
-                    "alias": "diagrams",
-                    "path": "/en/diagrams",
-                    "isVisible": true
-                },
-                {
-                    "name": "Privacy",
-                    "alias": "privacy",
-                    "path": "/en/privacy",
-                    "isVisible": true
-                }
-            ]
+        {
+          "name": "About",
+          "alias": "about",
+          "path": "/en/about",
+          "isVisible": true
         },
-        "project": "Portfolio"
-    },
-    "jsontosql": {
-        "global": {
-            "project": "Portfolio",
-            "navigation": [
-                {
-                    "name": "Home",
-                    "alias": "home",
-                    "path": "/en",
-                    "isVisible": false
-                },
-                {
-                    "name": "Detail",
-                    "alias": "detail",
-                    "path": "/en/detail",
-                    "isVisible": true
-                },
-                {
-                    "name": "JSON2SQL",
-                    "alias": "jsontosql",
-                    "path": "/en/json-to-sql",
-                    "isVisible": false
-                },
-                {
-                    "name": "Knowble",
-                    "alias": "knowble",
-                    "path": "/en/knowble",
-                    "isVisible": false
-                }
-            ]
+        {
+          "name": "Images",
+          "alias": "imageprocessor",
+          "path": "/en/image-process",
+          "isVisible": true
         },
-        "project": "Portfolio"
-    },
-    "imageprocessor": {
-        "global": {
-            "project": "Image Manipulator",
-            "navigation": [
-                {
-                    "name": "Home",
-                    "alias": "home",
-                    "path": "/en/home",
-                    "isVisible": true
-                },
-                {
-                    "name": "Images",
-                    "alias": "imageprocessor",
-                    "path": "/en/image-process",
-                    "isVisible": true
-                },
-                {
-                    "name": "Canvas",
-                    "alias": "canvas",
-                    "path": "/en/canvas",
-                    "isVisible": true
-                },
-                {
-                    "name": "Diagrams",
-                    "alias": "diagrams",
-                    "path": "/en/diagrams",
-                    "isVisible": true
-                },
-                {
-                    "name": "Privacy",
-                    "alias": "privacy",
-                    "path": "/en/privacy",
-                    "isVisible": true
-                }
-            ]
+        {
+          "name": "Canvas",
+          "alias": "canvas",
+          "path": "/en/canvas",
+          "isVisible": true
         },
-        "project": "Image Manipulator",
-        "canvas": "Canvas",
-        "cardDragNotification": "Card can be resized to view full image for cropping",
-        "uploadImage": "Upload Images",
-        "uploadImagePlaceholder": "Upload the images",
-        "uploadImageInputName": "Image uploader",
-        "imageExists": "Image already exists",
-        "aspectRatio": "Aspect Ratio",
-        "scale": "Scale",
-        "transitionX": "Move lef to right",
-        "transitionY": "Move up or down",
-        "allow": "Allow",
-        "allowInput": "Allow {input}",
-        "rotateImage": "Rotate image",
-        "increaseInput": "Increase {inputName}"
-    },
-    "canvas": {
-        "global": {
-            "project": "Canvas",
-            "navigation": [
-                {
-                    "name": "Home",
-                    "alias": "home",
-                    "path": "/en/home",
-                    "isVisible": true
-                },
-                {
-                    "name": "Images",
-                    "alias": "imageprocessor",
-                    "path": "/en/image-process",
-                    "isVisible": true
-                },
-                {
-                    "name": "Canvas",
-                    "alias": "canvas",
-                    "path": "/en/canvas",
-                    "isVisible": true
-                },
-                {
-                    "name": "Diagrams",
-                    "alias": "diagrams",
-                    "path": "/en/diagrams",
-                    "isVisible": true
-                },
-                {
-                    "name": "Privacy",
-                    "alias": "privacy",
-                    "path": "/en/privacy",
-                    "isVisible": true
-                }
-            ]
+        {
+          "name": "Diagrams",
+          "alias": "diagrams",
+          "path": "/en/diagrams",
+          "isVisible": true
         },
-        "project": "Canvas",
-        "toolbar": {
-            "select": "Select",
-            "rect": "Rectangle",
-            "circle": "Circle",
-            "triangle": "Triangle",
-            "line": "Line",
-            "text": "Text",
-            "pencil": "Pencil",
-            "image": "Add Image",
-            "video": "Add Video"
+        {
+          "name": "Converter",
+          "alias": "converter",
+          "path": "/en/json-to-sql",
+          "isVisible": true
         },
-        "layers": {
-            "title": "Layers",
-            "empty": "No objects on canvas"
-        },
-        "properties": {
-            "title": "Properties",
-            "fill": "Fill Color",
-            "stroke": "Stroke Color",
-            "strokeWidth": "Stroke Width",
-            "opacity": "Opacity",
-            "shadow": "Shadow",
-            "shadowColor": "Shadow Color",
-            "shadowBlur": "Blur",
-            "shadowOffsetX": "Shadow X",
-            "shadowOffsetY": "Shadow Y",
-            "brushColor": "Brush Color",
-            "brushWidth": "Brush Thickness",
-            "apply": "Apply"
+        {
+          "name": "Privacy",
+          "alias": "privacy",
+          "path": "/en/privacy",
+          "isVisible": true
         }
+      ]
     },
-    "knowble": {
-        "global": {
-            "project": "Knowble",
-            "navigation": [
-                {
-                    "name": "Home",
-                    "alias": "home",
-                    "path": "/en/home",
-                    "isVisible": true
-                },
-                {
-                    "name": "Images",
-                    "alias": "imageprocessor",
-                    "path": "/en/image-process",
-                    "isVisible": true
-                },
-                {
-                    "name": "Canvas",
-                    "alias": "canvas",
-                    "path": "/en/canvas",
-                    "isVisible": true
-                },
-                {
-                    "name": "Diagrams",
-                    "alias": "diagrams",
-                    "path": "/en/diagrams",
-                    "isVisible": true
-                },
-                {
-                    "name": "Privacy",
-                    "alias": "privacy",
-                    "path": "/en/privacy",
-                    "isVisible": true
-                }
-            ]
+    "project": "Portfolio"
+  },
+  "about": {
+    "global": {
+      "project": "Portfolio",
+      "navigation": [
+        {
+          "name": "Home",
+          "alias": "home",
+          "path": "/en/home",
+          "isVisible": true
         },
-        "project": "Knowble",
-        "brand": "Knowble",
-        "login": "Login",
-        "recordMoment": "Record a moment",
-        "postThought": "Post a thought",
-        "search": {
-            "placeholder": "Search questions…",
-            "filters": "Filters"
+        {
+          "name": "About",
+          "alias": "about",
+          "path": "/en/about",
+          "isVisible": true
         },
-        "filter": {
-            "title": "Filter Questions",
-            "category": "Category",
-            "tags": "Tags",
-            "clearAll": "Clear all filters"
+        {
+          "name": "Images",
+          "alias": "imageprocessor",
+          "path": "/en/image-process",
+          "isVisible": true
         },
-        "card": {
-            "viewDetail": "View Detail",
-            "audio": "{count} audio",
-            "images": "{count, plural, one {# image} other {# images}}"
+        {
+          "name": "Canvas",
+          "alias": "canvas",
+          "path": "/en/canvas",
+          "isVisible": true
         },
-        "dialog": {
-            "title": "Record a moment",
-            "titleLabel": "Title",
-            "titlePlaceholder": "e.g. How does X work in Y?",
-            "titleCounter": "{count}/400",
-            "categoryLabel": "Category",
-            "categoryPlaceholder": "Type to search categories…",
-            "categoryChangePlaceholder": "Change category…",
-            "tagsLabel": "Tags",
-            "tagsPlaceholder": "Type to add tags…",
-            "voiceRecordings": "Voice Recordings",
-            "segment": "Seg {index}",
-            "recording": "Recording",
-            "reRecording": "Re-rec Seg {index}",
-            "timer": "{elapsed} / 0:30",
-            "stopRecording": "Stop recording",
-            "recordVoice": "Record voice note",
-            "stopReRecording": "Stop re-recording",
-            "reRecordSegment": "Re-record this segment",
-            "cancel": "Cancel",
-            "submit": "Submit question"
+        {
+          "name": "Diagrams",
+          "alias": "diagrams",
+          "path": "/en/diagrams",
+          "isVisible": true
         },
-        "feed": {
-            "loading": "Loading…",
-            "loadingMore": "Loading more…",
-            "error": "Failed to load questions. Check your connection and try again.",
-            "retry": "Retry",
-            "empty": "No questions found",
-            "clearFilters": "Clear filters",
-            "endOfList": "You've reached the end"
+        {
+          "name": "Converter",
+          "alias": "converter",
+          "path": "/en/json-to-sql",
+          "isVisible": true
+        },
+        {
+          "name": "Privacy",
+          "alias": "privacy",
+          "path": "/en/privacy",
+          "isVisible": true
         }
+      ]
     },
-    "privacy": {
-        "global": {
-            "project": "Privacy Policy",
-            "navigation": [
-                {
-                    "name": "Home",
-                    "alias": "home",
-                    "path": "/en/home",
-                    "isVisible": true
-                },
-                {
-                    "name": "About",
-                    "alias": "about",
-                    "path": "/en/about",
-                    "isVisible": true
-                },
-                {
-                    "name": "Images",
-                    "alias": "imageprocessor",
-                    "path": "/en/image-process",
-                    "isVisible": true
-                },
-                {
-                    "name": "Canvas",
-                    "alias": "canvas",
-                    "path": "/en/canvas",
-                    "isVisible": true
-                },
-                {
-                    "name": "Diagrams",
-                    "alias": "diagrams",
-                    "path": "/en/diagrams",
-                    "isVisible": true
-                },
-                {
-                    "name": "Privacy",
-                    "alias": "privacy",
-                    "path": "/en/privacy",
-                    "isVisible": true
-                }
-            ]
+    "project": "Portfolio"
+  },
+  "converter": {
+    "global": {
+      "project": "Portfolio",
+      "navigation": [
+        {
+          "name": "Home",
+          "alias": "home",
+          "path": "/en",
+          "isVisible": false
         },
-        "title": "Privacy Policy",
-        "lastUpdated": "Last updated: March 2025",
-        "intro": "This privacy policy explains how the tools on this site handle your data. All tools are designed with privacy in mind — your data stays on your device.",
-        "sections": {
-            "canvas": {
-                "title": "Canvas Editor",
-                "body": "The Canvas Editor is a fully client-side tool. All drawing, shapes, arrows, images, and videos you add are processed and stored only in your browser. No canvas data is transmitted to any server. Uploaded images and videos are read locally using the browser File API and are never sent to a remote service."
-            },
-            "imageProcessor": {
-                "title": "Image Manipulator",
-                "body": "The Image Manipulator sends your image to an API for conversion processing. The image is used solely to perform the requested conversion and is not stored, logged, or retained on any server after processing is complete. The converted result is returned directly to your browser."
-            },
-            "directflow": {
-                "title": "DirectFlow",
-                "body": "DirectFlow is an external application with its own backend. When you interact with DirectFlow, standard web request data (such as IP address and browser type) may be logged by the server as part of normal operation. No personal data is collected beyond what is necessary for the service to function."
-            },
-            "directflowDocs": {
-                "title": "DirectFlow Docs (Mobile App)",
-                "body": "DirectFlow Docs is a mobile application for reading PDF, image, and Word documents. All content is stored and accessed entirely on your device. The app does not transmit any data to external servers, does not require an account, and does not collect any personal information. No analytics, crash reporting, or third-party SDKs are used."
-            },
-            "diagrams": {
-                "title": "Diagram Builder",
-                "body": "The Diagram Builder is a fully client-side tool. All nodes, edges, shapes, and image uploads are created and stored only in your browser session. No diagram data is sent to any server. Images added to nodes are read locally via the browser File API and are never transmitted to a remote service. Diagrams exported as .flow files are base64-encoded JSON stored entirely on your device."
-            },
-            "analytics": {
-                "title": "Analytics",
-                "body": "This site uses Firebase Analytics to collect anonymous usage data such as page views and general device information. No personally identifiable information is collected. You can opt out by using a browser extension that blocks Google Analytics."
-            },
-            "contact": {
-                "title": "Contact",
-                "body": "If you have any questions about this privacy policy, please raise an issue on the project repository or reach out via the contact details on the home page."
-            }
+       {
+          "name": "About",
+          "alias": "about",
+          "path": "/en/about",
+          "isVisible": true
+        },
+        {
+          "name": "Images",
+          "alias": "imageprocessor",
+          "path": "/en/image-process",
+          "isVisible": true
+        },
+        {
+          "name": "Canvas",
+          "alias": "canvas",
+          "path": "/en/canvas",
+          "isVisible": true
+        },
+        {
+          "name": "Diagrams",
+          "alias": "diagrams",
+          "path": "/en/diagrams",
+          "isVisible": true
+        },
+        {
+          "name": "Converter",
+          "alias": "converter",
+          "path": "/en/json-to-sql",
+          "isVisible": true
+        },
+        {
+          "name": "Knowble",
+          "alias": "knowble",
+          "path": "/en/knowble",
+          "isVisible": false
+        },
+        {
+          "name": "Privacy",
+          "alias": "privacy",
+          "path": "/en/privacy",
+          "isVisible": true
         }
+      ]
     },
-    "diagrams": {
-        "global": {
-            "project": "Diagrams",
-            "navigation": [
-                {
-                    "name": "Home",
-                    "alias": "home",
-                    "path": "/en/home",
-                    "isVisible": true
-                },
-                {
-                    "name": "Images",
-                    "alias": "imageprocessor",
-                    "path": "/en/image-process",
-                    "isVisible": true
-                },
-                {
-                    "name": "Canvas",
-                    "alias": "canvas",
-                    "path": "/en/canvas",
-                    "isVisible": true
-                },
-                {
-                    "name": "Diagrams",
-                    "alias": "diagrams",
-                    "path": "/en/diagrams",
-                    "isVisible": true
-                },
-                {
-                    "name": "Privacy",
-                    "alias": "privacy",
-                    "path": "/en/privacy",
-                    "isVisible": true
-                }
-            ]
+    "project": "Portfolio"
+  },
+  "imageprocessor": {
+    "global": {
+      "project": "Image Manipulator",
+      "navigation": [
+        {
+          "name": "Home",
+          "alias": "home",
+          "path": "/en/home",
+          "isVisible": true
         },
-        "project": "Diagrams"
+        {
+          "name": "Images",
+          "alias": "imageprocessor",
+          "path": "/en/image-process",
+          "isVisible": true
+        },
+        {
+          "name": "Canvas",
+          "alias": "canvas",
+          "path": "/en/canvas",
+          "isVisible": true
+        },
+        {
+          "name": "Diagrams",
+          "alias": "diagrams",
+          "path": "/en/diagrams",
+          "isVisible": true
+        },
+        {
+          "name": "Converter",
+          "alias": "converter",
+          "path": "/en/json-to-sql",
+          "isVisible": true
+        },
+        {
+          "name": "Privacy",
+          "alias": "privacy",
+          "path": "/en/privacy",
+          "isVisible": true
+        }
+      ]
+    },
+    "project": "Image Manipulator",
+    "canvas": "Canvas",
+    "cardDragNotification": "Card can be resized to view full image for cropping",
+    "uploadImage": "Upload Images",
+    "uploadImagePlaceholder": "Upload the images",
+    "uploadImageInputName": "Image uploader",
+    "imageExists": "Image already exists",
+    "aspectRatio": "Aspect Ratio",
+    "scale": "Scale",
+    "transitionX": "Move lef to right",
+    "transitionY": "Move up or down",
+    "allow": "Allow",
+    "allowInput": "Allow {input}",
+    "rotateImage": "Rotate image",
+    "increaseInput": "Increase {inputName}"
+  },
+  "canvas": {
+    "global": {
+      "project": "Canvas",
+      "navigation": [
+        {
+          "name": "Home",
+          "alias": "home",
+          "path": "/en/home",
+          "isVisible": true
+        },
+        {
+          "name": "Images",
+          "alias": "imageprocessor",
+          "path": "/en/image-process",
+          "isVisible": true
+        },
+        {
+          "name": "Canvas",
+          "alias": "canvas",
+          "path": "/en/canvas",
+          "isVisible": true
+        },
+        {
+          "name": "Diagrams",
+          "alias": "diagrams",
+          "path": "/en/diagrams",
+          "isVisible": true
+        },
+        {
+          "name": "Converter",
+          "alias": "converter",
+          "path": "/en/json-to-sql",
+          "isVisible": true
+        },
+        {
+          "name": "Privacy",
+          "alias": "privacy",
+          "path": "/en/privacy",
+          "isVisible": true
+        }
+      ]
+    },
+    "project": "Canvas",
+    "toolbar": {
+      "select": "Select",
+      "rect": "Rectangle",
+      "circle": "Circle",
+      "triangle": "Triangle",
+      "line": "Line",
+      "text": "Text",
+      "pencil": "Pencil",
+      "image": "Add Image",
+      "video": "Add Video"
+    },
+    "layers": {
+      "title": "Layers",
+      "empty": "No objects on canvas"
+    },
+    "properties": {
+      "title": "Properties",
+      "fill": "Fill Color",
+      "stroke": "Stroke Color",
+      "strokeWidth": "Stroke Width",
+      "opacity": "Opacity",
+      "shadow": "Shadow",
+      "shadowColor": "Shadow Color",
+      "shadowBlur": "Blur",
+      "shadowOffsetX": "Shadow X",
+      "shadowOffsetY": "Shadow Y",
+      "brushColor": "Brush Color",
+      "brushWidth": "Brush Thickness",
+      "apply": "Apply"
     }
+  },
+  "knowble": {
+    "global": {
+      "project": "Knowble",
+      "navigation": [
+        {
+          "name": "Home",
+          "alias": "home",
+          "path": "/en/home",
+          "isVisible": true
+        },
+        {
+          "name": "Images",
+          "alias": "imageprocessor",
+          "path": "/en/image-process",
+          "isVisible": true
+        },
+        {
+          "name": "Canvas",
+          "alias": "canvas",
+          "path": "/en/canvas",
+          "isVisible": true
+        },
+        {
+          "name": "Diagrams",
+          "alias": "diagrams",
+          "path": "/en/diagrams",
+          "isVisible": true
+        },
+        {
+          "name": "Converter",
+          "alias": "converter",
+          "path": "/en/json-to-sql",
+          "isVisible": true
+        },
+        {
+          "name": "Privacy",
+          "alias": "privacy",
+          "path": "/en/privacy",
+          "isVisible": true
+        }
+      ]
+    },
+    "project": "Knowble",
+    "brand": "Knowble",
+    "login": "Login",
+    "recordMoment": "Record a moment",
+    "postThought": "Post a thought",
+    "search": {
+      "placeholder": "Search questions…",
+      "filters": "Filters"
+    },
+    "filter": {
+      "title": "Filter Questions",
+      "category": "Category",
+      "tags": "Tags",
+      "clearAll": "Clear all filters"
+    },
+    "card": {
+      "viewDetail": "View Detail",
+      "audio": "{count} audio",
+      "images": "{count, plural, one {# image} other {# images}}"
+    },
+    "dialog": {
+      "title": "Record a moment",
+      "titleLabel": "Title",
+      "titlePlaceholder": "e.g. How does X work in Y?",
+      "titleCounter": "{count}/400",
+      "categoryLabel": "Category",
+      "categoryPlaceholder": "Type to search categories…",
+      "categoryChangePlaceholder": "Change category…",
+      "tagsLabel": "Tags",
+      "tagsPlaceholder": "Type to add tags…",
+      "voiceRecordings": "Voice Recordings",
+      "segment": "Seg {index}",
+      "recording": "Recording",
+      "reRecording": "Re-rec Seg {index}",
+      "timer": "{elapsed} / 0:30",
+      "stopRecording": "Stop recording",
+      "recordVoice": "Record voice note",
+      "stopReRecording": "Stop re-recording",
+      "reRecordSegment": "Re-record this segment",
+      "cancel": "Cancel",
+      "submit": "Submit question"
+    },
+    "feed": {
+      "loading": "Loading…",
+      "loadingMore": "Loading more…",
+      "error": "Failed to load questions. Check your connection and try again.",
+      "retry": "Retry",
+      "empty": "No questions found",
+      "clearFilters": "Clear filters",
+      "endOfList": "You've reached the end"
+    }
+  },
+  "privacy": {
+    "global": {
+      "project": "Privacy Policy",
+      "navigation": [
+        {
+          "name": "Home",
+          "alias": "home",
+          "path": "/en/home",
+          "isVisible": true
+        },
+        {
+          "name": "About",
+          "alias": "about",
+          "path": "/en/about",
+          "isVisible": true
+        },
+        {
+          "name": "Images",
+          "alias": "imageprocessor",
+          "path": "/en/image-process",
+          "isVisible": true
+        },
+        {
+          "name": "Canvas",
+          "alias": "canvas",
+          "path": "/en/canvas",
+          "isVisible": true
+        },
+        {
+          "name": "Diagrams",
+          "alias": "diagrams",
+          "path": "/en/diagrams",
+          "isVisible": true
+        },
+        {
+          "name": "Converter",
+          "alias": "converter",
+          "path": "/en/json-to-sql",
+          "isVisible": true
+        },
+        {
+          "name": "Privacy",
+          "alias": "privacy",
+          "path": "/en/privacy",
+          "isVisible": true
+        }
+      ]
+    },
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: March 2025",
+    "intro": "This privacy policy explains how the tools on this site handle your data. All tools are designed with privacy in mind — your data stays on your device.",
+    "sections": {
+      "canvas": {
+        "title": "Canvas Editor",
+        "body": "The Canvas Editor is a fully client-side tool. All drawing, shapes, arrows, images, and videos you add are processed and stored only in your browser. No canvas data is transmitted to any server. Uploaded images and videos are read locally using the browser File API and are never sent to a remote service."
+      },
+      "imageProcessor": {
+        "title": "Image Manipulator",
+        "body": "The Image Manipulator sends your image to an API for conversion processing. The image is used solely to perform the requested conversion and is not stored, logged, or retained on any server after processing is complete. The converted result is returned directly to your browser."
+      },
+      "directflow": {
+        "title": "DirectFlow",
+        "body": "DirectFlow is an external application with its own backend. When you interact with DirectFlow, standard web request data (such as IP address and browser type) may be logged by the server as part of normal operation. No personal data is collected beyond what is necessary for the service to function."
+      },
+      "directflowDocs": {
+        "title": "DirectFlow Docs (Mobile App)",
+        "body": "DirectFlow Docs is a mobile application for reading PDF, image, and Word documents. All content is stored and accessed entirely on your device. The app does not transmit any data to external servers, does not require an account, and does not collect any personal information. No analytics, crash reporting, or third-party SDKs are used."
+      },
+      "diagrams": {
+        "title": "Diagram Builder",
+        "body": "The Diagram Builder is a fully client-side tool. All nodes, edges, shapes, and image uploads are created and stored only in your browser session. No diagram data is sent to any server. Images added to nodes are read locally via the browser File API and are never transmitted to a remote service. Diagrams exported as .flow files are base64-encoded JSON stored entirely on your device."
+      },
+      "analytics": {
+        "title": "Analytics",
+        "body": "This site uses Firebase Analytics to collect anonymous usage data such as page views and general device information. No personally identifiable information is collected. You can opt out by using a browser extension that blocks Google Analytics."
+      },
+      "contact": {
+        "title": "Contact",
+        "body": "If you have any questions about this privacy policy, please raise an issue on the project repository or reach out via the contact details on the home page."
+      }
+    }
+  },
+  "diagrams": {
+    "global": {
+      "project": "Diagrams",
+      "navigation": [
+        {
+          "name": "Home",
+          "alias": "home",
+          "path": "/en/home",
+          "isVisible": true
+        },
+        {
+          "name": "Images",
+          "alias": "imageprocessor",
+          "path": "/en/image-process",
+          "isVisible": true
+        },
+        {
+          "name": "Canvas",
+          "alias": "canvas",
+          "path": "/en/canvas",
+          "isVisible": true
+        },
+        {
+          "name": "Diagrams",
+          "alias": "diagrams",
+          "path": "/en/diagrams",
+          "isVisible": true
+        },
+        {
+          "name": "Converter",
+          "alias": "converter",
+          "path": "/en/json-to-sql",
+          "isVisible": true
+        },
+        {
+          "name": "Privacy",
+          "alias": "privacy",
+          "path": "/en/privacy",
+          "isVisible": true
+        }
+      ]
+    },
+    "project": "Diagrams"
+  }
 }
