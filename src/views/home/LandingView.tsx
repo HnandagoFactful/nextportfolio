@@ -22,6 +22,16 @@ const canvasFeatures = [
     "Animated dashed flows",
 ];
 
+const diagramsFeatures = [
+    "Drag-and-drop shapes: Rectangle, Square, Circle, Oval",
+    "Custom image nodes with file upload or URL",
+    "Connect nodes with animated, dashed, or colored edges",
+    "Resize nodes and edit labels, colors, and borders",
+    "Export as PNG, JPEG, SVG, or shareable .flow code",
+    "Import .flow files to restore diagrams instantly",
+    "Adjustable canvas background color",
+];
+
 const directflowFeatures = [
     "Read EPub & PDF files fully offline",
     "No account or internet connection needed",
@@ -64,7 +74,7 @@ export default function LandingView() {
                 </Text>
             </motion.div>
 
-            <Flex direction="row" gap="5" wrap="wrap">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
                 <motion.div
                     initial={{ opacity: 0, x: -40 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -131,6 +141,34 @@ export default function LandingView() {
                     <Card style={{ borderColor: "var(--lime-6)", height: "100%" }}>
                         <Flex direction="column" gap="3" p="3" style={{ height: "100%" }}>
                             <Heading size="5" style={{ color: "var(--accent-a11)" }}>
+                                Diagram Builder
+                            </Heading>
+                            <Text as="p" color="gray" size="2">
+                                A drag-and-drop flowchart builder. Create, connect, and export diagrams entirely in your browser.
+                            </Text>
+                            <FeatureList items={diagramsFeatures} />
+                            <Box mt="auto" pt="3">
+                                <Button
+                                    color="lime"
+                                    variant="soft"
+                                    size="3"
+                                    onClick={() => router.push('/en/diagrams')}
+                                    className="cursor-pointer w-full">
+                                    Open Diagram Builder →
+                                </Button>
+                            </Box>
+                        </Flex>
+                    </Card>
+                </motion.div>
+
+                <motion.div
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.5 }}
+                    style={{ flex: "1 1 280px" }}>
+                    <Card style={{ borderColor: "var(--lime-6)", height: "100%" }}>
+                        <Flex direction="column" gap="3" p="3" style={{ height: "100%" }}>
+                            <Heading size="5" style={{ color: "var(--accent-a11)" }}>
                                 Directflow Reader
                             </Heading>
                             <Text as="p" color="gray" size="2">
@@ -152,7 +190,7 @@ export default function LandingView() {
                         </Flex>
                     </Card>
                 </motion.div>
-            </Flex>
+            </div>
         </Flex>
     );
 }

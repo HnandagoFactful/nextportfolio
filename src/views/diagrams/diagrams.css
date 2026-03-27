@@ -1,0 +1,16 @@
+.diagram-controls .react-flow__controls-button {
+    background: var(--lime-12);
+    border-bottom: 1px solid var(--lime-8) !important;
+    fill: var(--lime-1);
+    border-top-left-radius: 8 !important;
+    border-top-right-radius: 8 !important;
+    &:last-child {
+        border-bottom: none !important;
+        border-bottom-left-radius: 8 !important;
+        border-bottom-right-radius: 8 !important;
+    }
+}
+
+.diagram-controls .react-flow__controls-button:hover {
+    background: var(--lime-11);
+}

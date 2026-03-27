@@ -29,6 +29,12 @@
                     "isVisible": true
                 },
                 {
+                    "name": "Diagrams",
+                    "alias": "diagrams",
+                    "path": "/en/diagrams",
+                    "isVisible": true
+                },
+                {
                     "name": "Privacy",
                     "alias": "privacy",
                     "path": "/en/privacy",
@@ -64,6 +70,12 @@
                     "name": "Canvas",
                     "alias": "canvas",
                     "path": "/en/canvas",
+                    "isVisible": true
+                },
+                {
+                    "name": "Diagrams",
+                    "alias": "diagrams",
+                    "path": "/en/diagrams",
                     "isVisible": true
                 },
                 {
@@ -131,6 +143,12 @@
                     "isVisible": true
                 },
                 {
+                    "name": "Diagrams",
+                    "alias": "diagrams",
+                    "path": "/en/diagrams",
+                    "isVisible": true
+                },
+                {
                     "name": "Privacy",
                     "alias": "privacy",
                     "path": "/en/privacy",
@@ -174,6 +192,12 @@
                     "name": "Canvas",
                     "alias": "canvas",
                     "path": "/en/canvas",
+                    "isVisible": true
+                },
+                {
+                    "name": "Diagrams",
+                    "alias": "diagrams",
+                    "path": "/en/diagrams",
                     "isVisible": true
                 },
                 {
@@ -236,6 +260,12 @@
                     "name": "Canvas",
                     "alias": "canvas",
                     "path": "/en/canvas",
+                    "isVisible": true
+                },
+                {
+                    "name": "Diagrams",
+                    "alias": "diagrams",
+                    "path": "/en/diagrams",
                     "isVisible": true
                 },
                 {
@@ -327,6 +357,12 @@
                     "isVisible": true
                 },
                 {
+                    "name": "Diagrams",
+                    "alias": "diagrams",
+                    "path": "/en/diagrams",
+                    "isVisible": true
+                },
+                {
                     "name": "Privacy",
                     "alias": "privacy",
                     "path": "/en/privacy",
@@ -354,6 +390,10 @@
                 "title": "DirectFlow Docs (Mobile App)",
                 "body": "DirectFlow Docs is a mobile application for reading PDF, image, and Word documents. All content is stored and accessed entirely on your device. The app does not transmit any data to external servers, does not require an account, and does not collect any personal information. No analytics, crash reporting, or third-party SDKs are used."
             },
+            "diagrams": {
+                "title": "Diagram Builder",
+                "body": "The Diagram Builder is a fully client-side tool. All nodes, edges, shapes, and image uploads are created and stored only in your browser session. No diagram data is sent to any server. Images added to nodes are read locally via the browser File API and are never transmitted to a remote service. Diagrams exported as .flow files are base64-encoded JSON stored entirely on your device."
+            },
             "analytics": {
                 "title": "Analytics",
                 "body": "This site uses Firebase Analytics to collect anonymous usage data such as page views and general device information. No personally identifiable information is collected. You can opt out by using a browser extension that blocks Google Analytics."
@@ -363,5 +403,43 @@
                 "body": "If you have any questions about this privacy policy, please raise an issue on the project repository or reach out via the contact details on the home page."
             }
         }
+    },
+    "diagrams": {
+        "global": {
+            "project": "Diagrams",
+            "navigation": [
+                {
+                    "name": "Home",
+                    "alias": "home",
+                    "path": "/en/home",
+                    "isVisible": true
+                },
+                {
+                    "name": "Images",
+                    "alias": "imageprocessor",
+                    "path": "/en/image-process",
+                    "isVisible": true
+                },
+                {
+                    "name": "Canvas",
+                    "alias": "canvas",
+                    "path": "/en/canvas",
+                    "isVisible": true
+                },
+                {
+                    "name": "Diagrams",
+                    "alias": "diagrams",
+                    "path": "/en/diagrams",
+                    "isVisible": true
+                },
+                {
+                    "name": "Privacy",
+                    "alias": "privacy",
+                    "path": "/en/privacy",
+                    "isVisible": true
+                }
+            ]
+        },
+        "project": "Diagrams"
     }
 }

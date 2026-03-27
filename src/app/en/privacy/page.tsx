@@ -9,6 +9,7 @@ import useAlerts from '@/hooks/useAlerts';
 const SECTION_KEYS = [
   'canvas',
   'imageProcessor',
+  'diagrams',
   'directflow',
   'directflowDocs',
   'analytics',
