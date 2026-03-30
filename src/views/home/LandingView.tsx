@@ -2,6 +2,7 @@
 import { Box, Flex, Heading, Text, Button, Card } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
+import { useMediaQuery } from "@uidotdev/usehooks";
 
 const imageProcessorFeatures = [
     "Upload multiple images",
@@ -56,6 +57,7 @@ function FeatureList({ items }: { items: string[] }) {
 
 export default function LandingView() {
     const router = useRouter();
+    const isMobile = useMediaQuery("(max-width: 768px)"); // Adjust animation distance based on screen size
 
     return (
         <Flex direction="column" gap="6" px="2" py="2">
@@ -64,7 +66,7 @@ export default function LandingView() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}>
                 <Heading color="lime" style={{ color: "var(--accent-a12)" }} size="8">
-                    Tools that save me the headache
+                    Mini-apps that save me the headache
                 </Heading>
                  <Text as="p" color="gray" size="3" mt="2">
                     No Ads, No data collection.
@@ -74,7 +76,7 @@ export default function LandingView() {
                 </Text>
             </motion.div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 20 }}>
                 <motion.div
                     initial={{ opacity: 0, x: -40 }}
                     animate={{ opacity: 1, x: 0 }}
