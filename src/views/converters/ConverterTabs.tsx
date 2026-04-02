@@ -27,7 +27,7 @@ export default function ConverterTabs() {
         <Tabs.Root value={activeTab} onValueChange={handleTabChange}>
             <Tabs.List style={{ "--accent-indicator": "var(--lime-6)" } as React.CSSProperties}>
                 {CONVERSION_TABS.map(({ value, label }) => (
-                    <Tabs.Trigger key={value} value={value}>
+                    <Tabs.Trigger key={value} value={value} style={{ color: "var(--lime-12)", fontWeight: "bold" } as React.CSSProperties}>
                         {label}
                     </Tabs.Trigger>
                 ))}

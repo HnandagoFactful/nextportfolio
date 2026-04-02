@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Card } from "@radix-ui/themes";
+import dynamic from "next/dynamic";
 import Alert from "@/components/globals/Alert";
 import ImageProcessorProvider from "@/providers/ImageProcessorProvider";
+const StarBackground = dynamic(() => import("@/components/globals/StarBackground"), { ssr: false });
 import ImageUploader from "./ImageUploader";
 import ImagesList from "./ImagesList";
 import ImageCropper from "./ImageCropper";
@@ -24,6 +26,8 @@ export default function ImageViewer() {
     }
 
     return (
+        <>
+        <StarBackground />
         <ImageProcessorProvider.Provider value={{
             data: fileData,
             removeData,
@@ -72,5 +76,6 @@ export default function ImageViewer() {
                 }
             `}</style>
         </ImageProcessorProvider.Provider>
+        </>
     )
 }

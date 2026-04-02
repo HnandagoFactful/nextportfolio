@@ -26,8 +26,10 @@
 import { use, useRef, useState, useEffect, useMemo } from 'react';
 import { Card, Button } from '@radix-ui/themes';
 import { Responsive, WidthProvider } from 'react-grid-layout';
+import dynamic from 'next/dynamic';
 import Alert from '@/components/globals/Alert';
 import CanvasProvider, { CanvasTool, ICanvasLayer } from '@/providers/CanvasProvider';
+const StarBackground = dynamic(() => import('@/components/globals/StarBackground'), { ssr: false });
 import { TranslationProvider } from '@/providers/TranslationProvider';
 import { canvasViewerLayout } from './layouts';
 import CanvasStage    from './CanvasStage';
@@ -307,6 +309,8 @@ export default function CanvasViewer() {
 
   // ─────────────────────────────────────────────────────────────────────────
   return (
+    <>
+    <StarBackground />
     <CanvasProvider.Provider value={{
       canvasRef,
       activeTool,
@@ -469,5 +473,6 @@ export default function CanvasViewer() {
         </PropertiesContext.Provider>
       </LayersContext.Provider>
     </CanvasProvider.Provider>
+    </>
   );
 }

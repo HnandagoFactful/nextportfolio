@@ -1,8 +1,10 @@
 "use client";
 import { useState } from "react";
 import { Box } from "@radix-ui/themes";
+import dynamic from "next/dynamic";
 import { ConverterContext, type TabValue } from "./ConverterContext";
 import ConverterTabs from "./ConverterTabs";
+const StarBackground = dynamic(() => import("@/components/globals/StarBackground"), { ssr: false });
 
 export default function ConverterView() {
     const [activeTab,    setActiveTab]    = useState<TabValue>("json-to-csv");
@@ -34,6 +36,8 @@ export default function ConverterView() {
     };
 
     return (
+        <>
+        <StarBackground />
         <ConverterContext.Provider value={{
             activeTab, setActiveTab,
             input,     setInput,
@@ -50,5 +54,6 @@ export default function ConverterView() {
                 <ConverterTabs />
             </Box>
         </ConverterContext.Provider>
+        </>
     );
 }
