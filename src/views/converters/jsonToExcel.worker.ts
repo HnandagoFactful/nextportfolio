@@ -15,7 +15,7 @@ self.onmessage = (e: MessageEvent<WorkerRequest>) => {
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
 
-        const buffer = XLSX.write(wb, { bookType: "xlsx", type: "array" }) as ArrayBuffer;
+        const buffer = new Uint8Array(XLSX.write(wb, { bookType: "xlsx", type: "array" })).buffer;
         self.postMessage({ type: "done", buffer } satisfies WorkerResponse, { transfer: [buffer] });
     } catch (err) {
         self.postMessage({ type: "error", message: String(err) } satisfies WorkerResponse);

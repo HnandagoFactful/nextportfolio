@@ -2,6 +2,7 @@
 import dynamic from "next/dynamic";
 import React from "react";
 import { Flex, Link, Section } from "@radix-ui/themes";
+const StarBackground = dynamic(() => import("@/components/globals/StarBackground"), { ssr: false });
 const HomeHeader = dynamic(() => import('./HomeHeader'),
 { ssr: false })
 const Education = dynamic(() => import('./education/Education'),
@@ -13,6 +14,7 @@ export default function HomeView() {
 
   return (
     <Section className="!pt-2.5 pl-2 relative">
+      <StarBackground />
       <HomeHeader />
       <Experience />
       <Education />

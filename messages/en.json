@@ -51,7 +51,7 @@
   },
   "about": {
     "global": {
-      "project": "Portfolio",
+      "project": "About",
       "navigation": [
         {
           "name": "Home",
@@ -97,17 +97,17 @@
         }
       ]
     },
-    "project": "Portfolio"
+    "project": "About"
   },
   "converter": {
     "global": {
-      "project": "Portfolio",
+      "project": "Converter",
       "navigation": [
         {
           "name": "Home",
           "alias": "home",
-          "path": "/en",
-          "isVisible": false
+          "path": "/en/home",
+          "isVisible": true
         },
        {
           "name": "About",
@@ -153,7 +153,7 @@
         }
       ]
     },
-    "project": "Portfolio"
+    "project": "Converter"
   },
   "imageprocessor": {
     "global": {
@@ -163,6 +163,12 @@
           "name": "Home",
           "alias": "home",
           "path": "/en/home",
+          "isVisible": true
+        },
+        {
+          "name": "About",
+          "alias": "about",
+          "path": "/en/about",
           "isVisible": true
         },
         {
@@ -221,6 +227,12 @@
           "name": "Home",
           "alias": "home",
           "path": "/en/home",
+          "isVisible": true
+        },
+        {
+          "name": "About",
+          "alias": "about",
+          "path": "/en/about",
           "isVisible": true
         },
         {
@@ -295,6 +307,12 @@
           "name": "Home",
           "alias": "home",
           "path": "/en/home",
+          "isVisible": true
+        },
+        {
+          "name": "About",
+          "alias": "about",
+          "path": "/en/about",
           "isVisible": true
         },
         {
@@ -471,6 +489,12 @@
           "name": "Home",
           "alias": "home",
           "path": "/en/home",
+          "isVisible": true
+        },
+        {
+          "name": "About",
+          "alias": "about",
+          "path": "/en/about",
           "isVisible": true
         },
         {

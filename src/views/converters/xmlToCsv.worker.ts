@@ -21,10 +21,9 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
         // Find the first array of objects in the parsed result
         const rootKey = Object.keys(parsed)[0];
         const root = parsed[rootKey];
-        const rowsKey = Object.keys(root).find(k => Array.isArray(root[k]));
-        const rows: Record<string, unknown>[] = rowsKey
-            ? root[rowsKey]
-            : Array.isArray(root) ? root : [root];
+        const rowsKey = Object.keys(root).find(k => Array.isArray(root[k]) || (root[k] !== null && typeof root[k] === "object"));
+        const rawRows = rowsKey ? root[rowsKey] : (Array.isArray(root) ? root : root);
+        const rows: Record<string, unknown>[] = Array.isArray(rawRows) ? rawRows : [rawRows];
 
         if (rows.length === 0) throw new Error("No rows found in XML to convert to CSV");
 

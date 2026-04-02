@@ -13,6 +13,7 @@ export default function ConverterView() {
     const [fileName,     setFileName]     = useState("");
     const [loading,      setLoading]      = useState(false);
     const [error,        setError]        = useState<string | null>(null);
+    const [retrigger,    setRetrigger]    = useState(0);
 
     const reset = () => {
         setInput("");
@@ -22,6 +23,14 @@ export default function ConverterView() {
         setFileName("");
         setLoading(false);
         setError(null);
+        setRetrigger(0);
+    };
+
+    const triggerRetry = () => {
+        setOutput("");
+        setOutputBuffer(null);
+        setError(null);
+        setRetrigger(n => n + 1);
     };
 
     return (
@@ -34,6 +43,7 @@ export default function ConverterView() {
             fileName,  setFileName,
             loading,   setLoading,
             error,     setError,
+            retrigger, triggerRetry,
             reset,
         }}>
             <Box px="4" pt="4">

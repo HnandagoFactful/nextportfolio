@@ -40,7 +40,11 @@ export default function ContainerLayout({ children, pageName }: { children: Reac
                     gap="1"
                     className={clsx("p-0")}
                     style={{
-                        borderBottom: "1px solid var(--lime-9)",
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 50,
+                        borderBottom: "1px solid var(--lime-9)", 
+                        background: "linear-gradient(to right, var(--lime-2) 10%, var(--lime-8) 30%, var(--lime-2))",
                         boxShadow: scrollPosition > 10 ? "-2px 2px 8px -2px var(--lime-9)" : "unset",
                     }}>
                     <Flex height={"60px"}
@@ -59,7 +63,7 @@ export default function ContainerLayout({ children, pageName }: { children: Reac
                                 width={90}
                                 className="object-contain"
                             />
-                            <Heading color="lime" className='pl-4 text-2xl sm:text-2xl'>
+                            <Heading className='pl-4 text-2xl sm:text-2xl' style={{ color: "#e6effff0" }}>
                                 {t('global.project')}
                             </Heading>
                         </Flex>

@@ -14,10 +14,9 @@ self.onmessage = (e: MessageEvent<WorkerRequest>) => {
 
         const rootKey = Object.keys(parsed)[0];
         const root = parsed[rootKey];
-        const rowsKey = Object.keys(root).find(k => Array.isArray(root[k]));
-        const rows: Record<string, unknown>[] = rowsKey
-            ? root[rowsKey]
-            : Array.isArray(root) ? root : [root];
+        const rowsKey = Object.keys(root).find(k => Array.isArray(root[k]) || (root[k] !== null && typeof root[k] === "object"));
+        const rawRows = rowsKey ? root[rowsKey] : (Array.isArray(root) ? root : root);
+        const rows: Record<string, unknown>[] = Array.isArray(rawRows) ? rawRows : [rawRows];
 
         if (rows.length === 0) throw new Error("No rows found in XML to convert");
 
@@ -25,7 +24,7 @@ self.onmessage = (e: MessageEvent<WorkerRequest>) => {
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
 
-        const buffer = XLSX.write(wb, { bookType: "xlsx", type: "array" }) as ArrayBuffer;
+        const buffer = new Uint8Array(XLSX.write(wb, { bookType: "xlsx", type: "array" })).buffer;
         self.postMessage({ type: "done", buffer } satisfies WorkerResponse, { transfer: [buffer] });
     } catch (err) {
         self.postMessage({ type: "error", message: String(err) } satisfies WorkerResponse);

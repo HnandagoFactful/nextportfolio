@@ -1,8 +1,8 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Flex, Text, Dialog, Button, TextField } from "@radix-ui/themes";
 import { useMediaQuery } from "@uidotdev/usehooks";
-import { ChevronDown, ChevronRight, Download } from "lucide-react";
+import { ChevronDown, ChevronRight, Download, RefreshCw, Upload } from "lucide-react";
 import JsonViewer from "./JsonViewer";
 import { useConverter, CONVERSION_TABS } from "./ConverterContext";
 import type { WorkerResponse as JsonToCsvResponse } from "./jsonToCsv.worker";
@@ -140,7 +140,7 @@ function DownloadDialog() {
 }
 
 function OutputArea() {
-    const { output, loading, error } = useConverter();
+    const { output, outputBuffer, loading, error } = useConverter();
 
     if (loading) {
         return (
@@ -153,6 +153,13 @@ function OutputArea() {
         return (
             <Flex align="center" justify="center" style={{ height: "100%", minHeight: 200 }}>
                 <Text size="2" color="red">{error}</Text>
+            </Flex>
+        );
+    }
+    if (outputBuffer && outputBuffer.byteLength > 0) {
+        return (
+            <Flex align="center" justify="center" style={{ height: "100%", minHeight: 200 }}>
+                <Text size="2" style={{ color: "var(--lime-11)" }}>Excel file ready — click Download to save</Text>
             </Flex>
         );
     }
@@ -266,7 +273,7 @@ function useRawLabel() {
 type TextResponse = JsonToCsvResponse | CsvToJsonResponse | XmlToJsonResponse | XmlToCsvResponse;
 
 function useConversionWorker() {
-    const { input, inputBuffer, activeTab, setOutput, setOutputBuffer, setLoading, setError } = useConverter();
+    const { input, inputBuffer, activeTab, retrigger, setOutput, setOutputBuffer, setLoading, setError } = useConverter();
     const workerRef = useRef<Worker | null>(null);
 
     useEffect(() => {
@@ -338,7 +345,7 @@ function useConversionWorker() {
 
         // Send correct payload per worker type
         if (activeTab === "excel-to-json") {
-            worker.postMessage({ buffer: inputBuffer }, [inputBuffer!]);
+            worker.postMessage({ buffer: inputBuffer }, { transfer: [inputBuffer!] });
         } else if (activeTab === "csv-to-json" || activeTab === "csv-to-excel") {
             worker.postMessage({ csv: input });
         } else if (activeTab.startsWith("xml-")) {
@@ -348,7 +355,98 @@ function useConversionWorker() {
         }
 
         return () => { worker.terminate(); };
-    }, [input, inputBuffer, activeTab]);
+    }, [input, inputBuffer, activeTab, retrigger]);
+}
+
+function InputPanelActions() {
+    const { activeTab, fileName, loading, triggerRetry, setInput, setInputBuffer, setFileName, setOutput, setOutputBuffer, setError } = useConverter();
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const fromFormat = CONVERSION_TABS.find(t => t.value === activeTab)?.from ?? "json";
+    const isExcelInput = fromFormat === "excel";
+
+    const ACCEPT_MAP: Record<string, string> = {
+        json:  ".json,application/json",
+        csv:   ".csv,text/csv",
+        xml:   ".xml,text/xml,application/xml",
+        excel: ".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel",
+    };
+
+    const handleFile = useCallback(async (file: File) => {
+        try {
+            setFileName(file.name);
+            setError(null);
+            setOutput("");
+            setOutputBuffer(null);
+            if (isExcelInput) {
+                const buf = await new Promise<ArrayBuffer>((res, rej) => {
+                    const r = new FileReader();
+                    r.onload  = e => res(e.target?.result as ArrayBuffer);
+                    r.onerror = () => rej(r.error);
+                    r.readAsArrayBuffer(file);
+                });
+                setInputBuffer(buf);
+                setInput("");
+            } else {
+                const text = await new Promise<string>((res, rej) => {
+                    const r = new FileReader();
+                    r.onload  = e => res(e.target?.result as string ?? "");
+                    r.onerror = () => rej(r.error);
+                    r.readAsText(file);
+                });
+                setInput(text);
+                setInputBuffer(null);
+            }
+        } catch {
+            setError(`Failed to read file: ${file.name}`);
+        }
+    }, [isExcelInput, setFileName, setError, setOutput, setOutputBuffer, setInput, setInputBuffer]);
+
+    return (
+        <Flex align="center" gap="2">
+            {fileName && (
+                <span style={{ fontSize: 11, color: "var(--lime-10)", maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {fileName}
+                </span>
+            )}
+            <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={loading}
+                title="Upload new file"
+                style={{
+                    display: "flex", alignItems: "center", gap: 4,
+                    padding: "4px 10px",
+                    background: "var(--lime-4)", border: "1px solid var(--lime-7)",
+                    borderRadius: 6, cursor: loading ? "not-allowed" : "pointer",
+                    color: "var(--lime-11)", fontSize: 12, fontWeight: 500,
+                    opacity: loading ? 0.4 : 1,
+                }}
+            >
+                <Upload size={12} /> Upload
+            </button>
+            <button
+                onClick={triggerRetry}
+                disabled={loading}
+                title="Re-run conversion"
+                style={{
+                    display: "flex", alignItems: "center", gap: 4,
+                    padding: "4px 10px",
+                    background: "var(--lime-4)", border: "1px solid var(--lime-7)",
+                    borderRadius: 6, cursor: loading ? "not-allowed" : "pointer",
+                    color: "var(--lime-11)", fontSize: 12, fontWeight: 500,
+                    opacity: loading ? 0.4 : 1,
+                }}
+            >
+                <RefreshCw size={12} /> Retry
+            </button>
+            <input
+                ref={fileInputRef}
+                type="file"
+                accept={ACCEPT_MAP[fromFormat]}
+                onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); e.target.value = ""; }}
+                style={{ display: "none" }}
+            />
+        </Flex>
+    );
 }
 
 export default function ConversionLayout() {
@@ -367,7 +465,7 @@ export default function ConversionLayout() {
                 padding: "12px 0",
             }}>
                 <Panel style={{ display: "flex", flexDirection: "column" }}>
-                    <PanelHeader>{rawLabel}</PanelHeader>
+                    <PanelHeader action={<InputPanelActions />}>{rawLabel}</PanelHeader>
                     <div style={{ flex: 1, overflow: "hidden" }}>
                         <RawViewer />
                     </div>
@@ -391,6 +489,7 @@ export default function ConversionLayout() {
                     <OutputArea />
                 </div>
             </Panel>
+            <InputPanelActions />
         </Flex>
     );
 }

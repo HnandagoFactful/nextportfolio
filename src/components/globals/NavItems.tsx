@@ -24,7 +24,7 @@ export default function NavItems() {
                     color="lime"
                     variant="ghost"
                     onClick={() => router.push(item.path)}>
-                    <Text size={"4"} weight={item.alias === pageName ? "bold" : "regular"}>{item?.name}</Text>
+                    <Text style={{ color: "var(--lime-a10)" }} size={"4"} weight={item.alias === pageName ? "bold" : "regular"}>{item?.name}</Text>
                 </Button>)
             })}
         </>

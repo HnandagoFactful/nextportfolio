@@ -24,6 +24,7 @@ export interface ConverterState {
     fileName:     string;
     loading:      boolean;
     error:        string | null;
+    retrigger:    number;
 }
 
 export interface ConverterContextValue extends ConverterState {
@@ -36,6 +37,7 @@ export interface ConverterContextValue extends ConverterState {
     setLoading:      (v: boolean) => void;
     setError:        (msg: string | null) => void;
     reset:           () => void;
+    triggerRetry:    () => void;
 }
 
 export const ConverterContext = createContext<ConverterContextValue>({
@@ -47,6 +49,7 @@ export const ConverterContext = createContext<ConverterContextValue>({
     fileName:     "",
     loading:      false,
     error:        null,
+    retrigger:    0,
     setActiveTab:    () => {},
     setInput:        () => {},
     setInputBuffer:  () => {},
@@ -56,6 +59,7 @@ export const ConverterContext = createContext<ConverterContextValue>({
     setLoading:      () => {},
     setError:        () => {},
     reset:           () => {},
+    triggerRetry:    () => {},
 });
 
 export function useConverter() {
